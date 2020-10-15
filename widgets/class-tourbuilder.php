@@ -26,7 +26,7 @@ class Tourbuilder extends Widget_Base{
 		wp_register_script( 'pano2vr_player', 'https://storage.googleapis.com/api.360ty.cloud/pano2vr_player.js', [ 'elementor-frontend' ], '1.0.0', true );
 		wp_register_script( 'skin', 'https://storage.googleapis.com/api.360ty.cloud/skin.js', [ 'elementor-frontend' ], '1.0.0', true );
 		wp_register_script( 'three',plugins_url('assets/js/three.min.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
-		wp_register_script( 'class-360ty',"https://storage.googleapis.com/api.360ty.cloud/Elementor-tour-widget/class-elementor-360ty.js", [ 'elementor-frontend' ], '1.0.0', true );
+		wp_register_script( 'class-360ty',plugins_url('assets/js/class-elementor-360ty.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
 		wp_register_script( 'jQuery','https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js', [ 'elementor-frontend' ], '1.0.0', true );
 		//wp_register_style( '360ty_styles',plugins_url('assets/css/pano_styles.css', dirname(__FILE__) ), ['elementor-frontend'], '1.0.0' );
 	}
