@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Add 360ty widgets to Elementor. Embed 360ty 360° Panorama Tours in your Wordpress site using Elementor.
+Add 360ty widgets to Elementor. Embed 360ty 360° Panorama Tours in your WordPress site using Elementor.
 
 == Description ==
 The 360ty Elementor Addon Plugin adds Widgets to Elementor, which allow you to embed 360ty Panorama Tours and customize them. It should work with other Pano2VR Tours, which were not created by us, too, but there may be some Features that won't work.
