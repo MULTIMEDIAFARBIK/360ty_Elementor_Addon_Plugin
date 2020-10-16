@@ -30,15 +30,13 @@ function appsero_init_tracker_360ty() {
 	if ( ! class_exists( 'Appsero\Client' ) ) {
 		require_once __DIR__ . 'appsero/src/Client.php';
 	}
-	$insights = new Appsero\Client( '0598eaf7-17fa-4468-92e6-052487308ae4', '360ty', __FILE__  );
-	
 	$client = new Appsero\Client( '0598eaf7-17fa-4468-92e6-052487308ae4', '360ty', __FILE__ );
+	
 
 	// Active insights
 	$client->insights()->init();
 
 	// Active automatic updater
-	$client->updater();
 
 }
 

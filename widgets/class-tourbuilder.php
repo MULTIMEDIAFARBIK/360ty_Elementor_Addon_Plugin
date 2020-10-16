@@ -9,9 +9,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	// Exit if accessed directly.
 	exit;
 }
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 class Tourbuilder extends Widget_Base{
 	/**
@@ -23,12 +20,10 @@ class Tourbuilder extends Widget_Base{
 	
 	public function __construct( $data = [], $args = null ) {
 		parent::__construct( $data, $args );
-		wp_register_script( 'pano2vr_player', 'https://storage.googleapis.com/api.360ty.cloud/pano2vr_player.js', [ 'elementor-frontend' ], '1.0.0', true );
-		wp_register_script( 'skin', 'https://storage.googleapis.com/api.360ty.cloud/skin.js', [ 'elementor-frontend' ], '1.0.0', true );
+		wp_register_script( 'pano2vr_player', plugins_url('assets/js/pano2vr_player.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
+		wp_register_script( 'skin', plugins_url('assets/js/skin.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
 		wp_register_script( 'three',plugins_url('assets/js/three.min.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
 		wp_register_script( 'class-360ty',plugins_url('assets/js/class-elementor-360ty.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
-		wp_register_script( 'jQuery','https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js', [ 'elementor-frontend' ], '1.0.0', true );
-		//wp_register_style( '360ty_styles',plugins_url('assets/css/pano_styles.css', dirname(__FILE__) ), ['elementor-frontend'], '1.0.0' );
 	}
 	
 
@@ -102,7 +97,7 @@ class Tourbuilder extends Widget_Base{
 	 */
 	public function get_script_depends() {
 		//$scripts = ['pano2vr_player','three','skin','init','setup_pano','share_buttons','class-360ty'];
-		$scripts = ['pano2vr_player','three','skin','class-360ty','jQuery'];
+		$scripts = ['pano2vr_player','three','skin','class-360ty'];
 	
 		return $scripts;
 	}
@@ -638,9 +633,6 @@ class Tourbuilder extends Widget_Base{
 	 * @access protected
 	 */
 	protected function render() {
-		$fov_target = isset($_POST['fov_target']) ? $_POST['fov_target'] : null;
-		$tilt_target = isset($_POST['$tilt_target']) ? $_POST['$tilt_target'] : null;
-		$pan_target = isset($_POST['$pan_target']) ? $_POST['$pan_target'] : null;
 		$settings = $this->get_settings_for_display();
 		$params = [
 				"basepath" => "'".$settings["basepath"]."'",
