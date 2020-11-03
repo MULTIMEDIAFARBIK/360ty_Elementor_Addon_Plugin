@@ -125,22 +125,27 @@ class Elementor_render_360ty{
 	}
 init(){
 	if(!document.getElementById(this.elementIDs["container_"+this.viewID])){
-		this.declareElements();
 		this.responsive_init(["tour_dimensions","show_impressum","share_buttons","singleImage"],["style_params","addons_params","addons_params","addons_params"]);
 		this.addMeta("viewport","width=device-width, initial-scale=1");
-		this.setup_pano();
-		if(this.addons_params.share_buttons == true){
-			this.setupButtons();
-		}
-		if(this.addons_params.show_impressum == true){
-			this.createImpressum();
-		}
-		this.setViewerSize(this.style_params.tour_dimensions.width,this.chooseHeight());
-		this.horizontallyAlignImage(this.style_params.horizontal_alignment);
-		this.addListeners();
-		if(this.elementorEditing() == true){
-			this.createValueSetterButtons();
-		}
+		let init_interval = setInterval(() =>{
+			if(document.getElementById(this.elementIDs["parentContainer_"+this.viewID]) !== undefined){
+				clearInterval(init_interval);
+				this.declareElements();
+				this.setup_pano();
+				if(this.addons_params.share_buttons == true){
+					this.setupButtons();
+				}
+				if(this.addons_params.show_impressum == true){
+					this.createImpressum();
+				}
+				this.setViewerSize(this.style_params.tour_dimensions.width,this.chooseHeight());
+				this.horizontallyAlignImage(this.style_params.horizontal_alignment);
+				this.addListeners();
+				if(this.elementorEditing() == true){
+					this.createValueSetterButtons();
+				}
+			}
+		},100);
 	}
 }
 
