@@ -4,7 +4,7 @@ Tags: 360, 360ty, pano2vr, garden gnome, garden gnome software, panorama, tour, 
 Requires at least: 5.0
 Tested up to: 5.5.1
 Requires PHP: 7.3
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
