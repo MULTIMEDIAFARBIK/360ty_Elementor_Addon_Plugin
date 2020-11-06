@@ -35,9 +35,8 @@ function appsero_init_tracker_360ty() {
 
 	// Active insights
 	$client->insights()->init();
-
 	// Active automatic updater
-
+	$client->updater();
 }
 
 appsero_init_tracker_360ty();
