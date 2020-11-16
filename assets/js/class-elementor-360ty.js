@@ -225,7 +225,7 @@ chooseHeight(){
 
 
 addMeta(metaName, metaContent){
-	var meta = document.createElement(meta);
+	var meta = document.createElement("meta");
 	meta.name = metaName;
 	meta.content = metaContent;
 	document.head.appendChild(meta);
