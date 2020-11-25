@@ -1,0 +1,116 @@
+[id^="tourbuilder_360ty_"] {
+  display: block;
+  overflow: hidden;
+  -webkit-transition: opacity 0.2s ease-in-out;
+  -moz-transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
+  z-index: 5;
+}
+[id^="pano_container_360ty_"] {
+  position: relative;
+  z-index: 4;
+}
+[id^="button_container_360ty_"] {
+  position: relative;
+  bottom: 45px;
+  display: inline-block;
+  z-index: 5;
+}
+[class^="shareButton_360ty_"] {
+  cursor: pointer;
+  font-size: 11px;
+  position: relative;
+  bottom: 0px;
+  left: 0px;
+  font-family: Raleway, "Helvetica Neue", "Lucida Grande", Arial, Verdana, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  margin: 6px 0px 6px 6px;
+  padding: 10px 10px;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(45, 49, 56, 0.1);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+[class^="shareButton_360ty_"]:hover {
+  color: #22264b;
+  border-color: #FFFFFF;
+  background: #FFFFFF;
+  text-decoration: none;
+}
+[id^="impressum_360ty_"] {
+  position: relative;
+  float: right;
+  display: inline-block;
+  margin-top: 10px;
+  right: 4px;
+  z-index: 5;
+}
+[id^="impressum_360ty_"] a {
+  cursor: pointer;
+  text-decoration: none;
+  color: #FFFFFF;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+[id^="impressum_360ty_"] a:visited {
+  cursor: pointer;
+  text-decoration: none;
+  color: #FFFFFF;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+[id^="impressum_360ty_"] a:hover {
+  text-decoration: none !important;
+  color: #521bff;
+  outline: none !important;
+}
+[id^="impressum_360ty_"] a:active [id^="impressum_360ty_"] a:focus {
+  text-decoration: none !important;
+  color: #FFFFFF;
+  outline: none !important;
+}
+[id^="impressum_360ty_"] p {
+  font-family: Montserrat, "Helvetica Neue", "Lucida Grande", Arial, Verdana, sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+[id^="buttonContainer_value_setter_"] {
+  position: absolute;
+  display: block;
+  top: 0;
+  z-index: 5;
+  width: inherit;
+}
+[class^="valueSetter_360ty_"] {
+  position: relative;
+  padding: 1.1em 1.44em;
+  padding-left: 0;
+  padding-right: 0;
+  font-size: 12px;
+  background-color: rgba(188, 188, 188, 0.2);
+  display: inline-block;
+  opacity: 1;
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: 0.0333em;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  border-radius: 0;
+  border: none;
+  text-transform: uppercase;
+  transition: opacity 0.15s linear;
+  text-align: center;
+}
+[class^="valueSetter_360ty_"]:hover {
+  background-color: rgba(188, 188, 188, 0.3);
+}
