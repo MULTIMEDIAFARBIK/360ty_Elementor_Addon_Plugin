@@ -180,9 +180,9 @@ class Tourbuilder extends Widget_Base{
 		);
 		*/
 		$this->add_control(
-				'fov_target',
+				'fov',
 				[
-				'label' => __( 'Target FOV', 'tour-builder' ),
+				'label' => __( 'FOV', 'tour-builder' ),
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => ['deg'],
 				'range' => [
@@ -193,7 +193,7 @@ class Tourbuilder extends Widget_Base{
 								],
 							],
 				'input_type' => 'number',
-				'description' => 'Field of View/Zoom target value of the Movement Animation in degree',
+				'description' => 'Field of View/Zoom value of the starting position of the tour',
 				'default' => [
 							'unit' => 'deg',
 							'size' => 65,
@@ -201,9 +201,9 @@ class Tourbuilder extends Widget_Base{
 				]
 		);
 		$this->add_control(
-				'tilt_target',
+				'tilt',
 				[
-				'label' => __( 'Target Tilt', 'tour-builder' ),
+				'label' => __( 'Tilt', 'tour-builder' ),
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => ['deg'],
 				'range' => [
@@ -214,7 +214,7 @@ class Tourbuilder extends Widget_Base{
 								],
 							],
 				'input_type' => 'number',
-				'description' => 'Vertical target value of the Movement Animation in degree',
+				'description' => 'Vertical value of the starting position of the tour',
 				'default' => [
 							'unit' => 'deg',
 							'size' => 0,
@@ -222,9 +222,9 @@ class Tourbuilder extends Widget_Base{
 				]
 		);
 		$this->add_control(
-				'pan_target',
+				'pan',
 				[
-				'label' => __( 'Target Pan', 'tour-builder' ),
+				'label' => __( 'Pan', 'tour-builder' ),
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => ['deg'],
 				'range' => [
@@ -235,34 +235,14 @@ class Tourbuilder extends Widget_Base{
 							],
 				],
 				'input_type' => 'number',
-				'description' => 'Horizontal target value of the Movement Animation in degree',
+				'description' => 'Horizontal value of the starting position of the tour',
 				'default' => [
 							'unit' => 'deg',
 							'size' => 0,
 							],
 				]
 		);
-		$this->add_control(
-				'roll',
-				[
-				'label' => __( 'Roll', 'tour-builder' ),
-				'type' => Controls_Manager::SLIDER,
-				'size_units' => ['deg'],
-				'range' => [
-				'deg' => [
-				'min' => -180,
-				'max' => 180,
-				'step' => 1,
-				],
-				],
-				'input_type' => 'number',
-				'description' => 'Tilts the tour over by x degree',
-				'default' => [
-				'unit' => 'deg',
-				'size' => 0,
-				],
-				]
-		);
+		
 		$this->end_controls_section();
 		//movement options
 		
@@ -272,18 +252,6 @@ class Tourbuilder extends Widget_Base{
 						'label' => __( 'Movement Options', 'tour-builder' ),
 						'tab' => Controls_Manager::TAB_CONTENT,
 				)
-		);
-		$this->add_control(
-				'show_movement',
-				[
-				'label' => __( 'Movement Animation', 'tour-builder' ),
-				'type' => \Elementor\Controls_Manager::SWITCHER,
-				'label_on' => __( 'Show', 'tour-builder' ),
-				'label_off' => __( 'Hide', 'tour-builder' ),
-				'return_value' => 'true',
-				'default' =>'false',
-				'description' => '"Fly-in" at the beginning of the tour from the Movement values to the Tour values',
-				]
 		);
 		/*$this->add_control(
 				'set_start_values',
@@ -300,9 +268,43 @@ class Tourbuilder extends Widget_Base{
 		);
 		*/
 		$this->add_control(
-				'fov_start',
+			'movement_delay',
 				[
-				'label' => __( 'Start FOV', 'tour-builder' ),
+				'label'   => __( 'Delay', 'tour-builder' ),
+				'type'    => Controls_Manager::NUMBER,
+				'min' => 0,
+				'step' => 100,
+				'default' => 0,
+				'description' => 'Starts the movement after x milliseconds',
+				]
+		);
+		$this->add_control(
+			'loop_amount',
+				[
+				'label'   => __( 'Loop Amount', 'tour-builder' ),
+				'type'    => Controls_Manager::NUMBER,
+				'min' => 0,
+				'step' => 1,
+				'default' => 1,
+				'description' => 'How often the Keyframes should repeat. If the value is 0, the Movement will not be shown.',
+				]
+		);
+		$repeater = new \Elementor\Repeater();
+		$repeater->add_control(
+			'nodeID',
+			[
+				'label'   => __( 'Node', 'tour-builder' ),
+				'type'    => Controls_Manager::NUMBER,
+				'min' => 1,
+				'step' => 1,
+				'default' => 1,
+				'description' => 'node ID of the desired 360 image.'
+			]
+		);
+		$repeater->add_control(
+			'fov',
+				[
+				'label' => __( 'FOV', 'tour-builder' ),
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => ['deg'],
 				'range' => [
@@ -313,20 +315,17 @@ class Tourbuilder extends Widget_Base{
 								],
 						],
 				'input_type' => 'number',
-				'description' => 'Field of View/Zoom start value of the Movement Animation in degree',
+				'description' => 'Field of View/Zoom value, where the Keyframe should move to',
 				'default' => [
 							'unit' => 'deg',
 							'size' => 65,
 							],
-				'condition'=>[
-							'show_movement' => 'true',
-							],
 				]
 		);
-		$this->add_control(
-				'tilt_start',
+		$repeater->add_control(
+			'tilt',
 				[
-				'label' => __( 'Start Tilt', 'tour-builder' ),
+				'label' => __( 'Tilt', 'tour-builder' ),
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => ['deg'],
 				'range' => [
@@ -337,20 +336,17 @@ class Tourbuilder extends Widget_Base{
 								],
 						],
 				'input_type' => 'number',
-				'description' => 'Vertical start value of the Movement Animation  in degree',
+				'description' => 'Vertical value, where the Keyframe should move to',
 				'default' => [
 							'unit' => 'deg',
 							'size' => 0,
 							],
-				'condition'=>[
-							'show_movement' => 'true',
-							],
 				]
 		);
-		$this->add_control(
-				'pan_start',
+		$repeater->add_control(
+			'pan',
 				[
-				'label' => __( 'Start Pan', 'tour-builder' ),
+				'label' => __( 'Pan', 'tour-builder' ),
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => ['deg'],
 				'range' => [
@@ -361,47 +357,26 @@ class Tourbuilder extends Widget_Base{
 								],
 						],
 				'input_type' => 'number',
-				'description' => 'Horizontal start value of the Movement Animation in degree',
+				'description' => 'Horizontal value, where the Keyframe should move to',
 				'default' => [
 							'unit' => 'deg',
 							'size' => 0,
 							],
-				'condition'=>[
-							'show_movement' => 'true',
-							],
 				]
 		);
-		$this->add_control(
-				'movement_speed',
+		$repeater->add_control(
+			'movement_speed',
 				[
 				'label'   => __( 'Speed', 'tour-builder' ),
 				'type'    => Controls_Manager::NUMBER,
 				'min' => 0.1,
 				'step' => 0.1,
 				'default' => 1,
-				'description' => 'Speed of the movement.Value 0.5 = 0.5x quicker, value 2 = 2x quicker, value 3 = 3x quicker...',
-				'condition'=>[
-							'show_movement' => 'true',
-							],
+				'description' => 'Speed of the movement. Value 0.5 = 0.5x quicker, value 2 = 2x quicker, value 3 = 3x quicker...',
 				],
-				);
-	
-		$this->add_control(
-				'movement_delay',
-				[
-				'label'   => __( 'Delay', 'tour-builder' ),
-				'type'    => Controls_Manager::NUMBER,
-				'min' => 0,
-				'step' => 100,
-				'default' => 0,
-				'description' => 'Starts the movement after x milliseconds',
-				'condition'=>[
-							'show_movement' => 'true',
-							],
-				]
 		);
-		$this->add_control(
-				'movement_lock_controls',
+		$repeater->add_control(
+			'movement_lock_controls',
 				[
 				'label' => __( 'Lock controls', 'tour-builder' ),
 				'type' => \Elementor\Controls_Manager::SELECT,
@@ -414,10 +389,17 @@ class Tourbuilder extends Widget_Base{
 					'Keyboard' => __( 'Keyboard', 'tour-builder' ),
 					'Keyboard_Mousewheel' => __( 'Keyboard+Mousewheel', 'tour-builder' ),
 					],
-				'description' => 'Which controls should be locked while the movement is active',
-				'condition'=>[
-							'show_movement' => 'true',
-							],
+				'description' => 'Which controls dont instantly abort the movement, while the keyframe is active. A mouseclick will always abort the movement. If the mouse is locked, the movement will be aborted after the Keyframe finished moving',
+				]
+		);
+		$this->add_control(
+			'keyframes',
+				[
+				'label' => __('Keyframes', 'tour-builder'),
+				'type' => Controls_Manager::REPEATER,
+				'fields' => $repeater->get_controls(),
+				'title_field' => 'Keyframe',
+				'description' => 'Each Keyframe has a position, where it will move to from the previous Keyframe. The first Keyframe moves from the starting Position.',
 				]
 		);
 		$this->end_controls_section();
@@ -605,118 +587,70 @@ class Tourbuilder extends Widget_Base{
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
-		$params = [
-				"basepath" => "'".$settings["basepath"]."'",
-				"node" => $settings["startnodeID"],
-				"fov_start" => isset($settings["fov_start"]["size"]) ? $settings["fov_start"]["size"] : 0,
-				"tilt_start" => isset($settings["tilt_start"]["size"]) ? $settings["tilt_start"]["size"] : 0,
-				"pan_start" => isset($settings["pan_start"]["size"]) ? $settings["pan_start"]["size"] : 0,
-				"fov_target" => $settings["fov_target"]["size"],
-				"tilt_target" => $settings["tilt_target"]["size"],
-				"pan_target" => $settings["pan_target"]["size"],
-				"tour_dimensions" =>[
-						"desktop" => [
-													"width" =>$settings["tour_width"],
-													"aspect_ratio" => $settings["aspect_ratio"],
-													"custom_aspect_ratio" => $settings["custom_aspect_ratio"],
-													"height" => $settings["tour_height"],
-													],
-						"tablet" => [
-													"width" => $settings["tour_width_tablet"],
-													"aspect_ratio" => $settings["aspect_ratio_tablet"],
-													"custom_aspect_ratio" => $settings["custom_aspect_ratio_tablet"],
-													"height" => $settings["tour_height_tablet"],
-													],
-						"mobile" => [
-													"width" => $settings["tour_width_mobile"],
-													"aspect_ratio" => $settings["aspect_ratio_mobile"],
-													"custom_aspect_ratio" => $settings["custom_aspect_ratio_mobile"],
-													"height" => $settings["tour_height_mobile"],
-													],
-				],
-				"single_image" =>[
-						"desktop" => $settings["single_image"],
-						"tablet" => $settings["single_image_tablet"],
-						"mobile" => $settings["single_image_mobile"],
-				], 
-				"slides_url" => "''",
-				"share_buttons" =>[
-						"desktop" => $settings["share_buttons"],
-						"tablet" => $settings["share_buttons_tablet"],
-						"mobile" => $settings["share_buttons_mobile"],
-				], 
-				"show_movement" => $settings["show_movement"],
-				"show_impressum" =>[
-						"desktop" => $settings["show_impressum"],
-						"tablet" => $settings["show_impressum_tablet"],
-						"mobile" => $settings["show_impressum_mobile"],
-				], 
-				"roll" => $settings["roll"]["size"],
-				"movement_speed" => isset($settings["movement_speed"]) ? $settings["movement_speed"] : 1,
-				"movement_delay" => isset($settings["movement_delay"]) ? $settings["movement_delay"] : 0,
-				"movement_lock_controls" => isset($settings["movement_lock_controls"]) ? "'".$settings["movement_lock_controls"]."'" : "'none'",
-				"horizontal_alignment" => "'".$settings['horizontal_alignment']."'",
-				"suffix" => "'".$settings['suffix']."'",
-				"suffix_noStr" => $settings['suffix'],
-				"iframeID" => "'"."preview-360ty-iframe"."'",
-				"containerID" => "'"."360ty_".$this->get_id()."'",
-				"containerID_noStr" => "360ty_".$this->get_id(),
-				"view_id" => "'".$this->get_id()."'",
-				"view_id_noStr" => $this->get_id(),
-				"skin_variables" => [
-					[
-						"variable" => "hotspotFarbe",
-						"value" => $settings['hotspot_color'],
-					]
-				]
-			];
-		
-		foreach ($params["single_image"] as $device => $value){
-			if($params["single_image"][$device] != 'true'){
-				$params["single_image"][$device] = false;
-			}else{
-				$params["single_image"][$device] = true;
-			}
-		}
-		foreach ($params["share_buttons"] as $device => $value){
-			if($params["share_buttons"][$device] != 'true'){
-				$params["share_buttons"][$device] = false;
-			}else{
-				$params["share_buttons"][$device]  = true;
-			}
-		}
-		foreach ($params["show_impressum"] as $device => $value){
-			if($params["show_impressum"][$device] != 'true'){
-				$params["show_impressum"][$device] = false;
-			}else{
-				$params["show_impressum"][$device] = true;
-			}
-		}
-		
-		if($params["show_movement"] !== 'true'){
-			$params["show_movement"] = 'false';
-		}
-	
-			$paramsstring = $params["view_id"].",".$params["basepath"].",".$params["node"].",". $params["fov_start"].",".$params["tilt_start"].",".$params["pan_start"].",".$params["fov_target"].",".$params["tilt_target"].",".$params["pan_target"].",".json_encode($params["tour_dimensions"]).",".json_encode($params["single_image"]).",".json_encode($params["share_buttons"]).",".json_encode($params["show_impressum"]).",".$params["movement_speed"].",".$params["roll"].",".$params["movement_delay"].",".$params["movement_lock_controls"].",".$params["show_movement"].",".$params["horizontal_alignment"].",".$params["containerID"].",".json_encode($params["skin_variables"]).",200";
-			?>
+		$containerID = "container_360ty_".$settings["suffix"];
+		$viewID = $this->get_id();
+		$tourheight_desktop = isset($settings['tour_height']) ? $settings['tour_height'] : (isset($settings['custom_aspect_ratio']) ? $settings['custom_aspect_ratio'] :  $settings['aspect_ratio']);
+		$tourheight_tablet = isset($settings['tour_height_tablet']) ? $settings['tour_height_tablet'] : (isset($settings['custom_aspect_ratio_tablet']) ? $settings['custom_aspect_ratio_tablet'] :  $settings['aspect_ratio_tablet']);
+		$tourheight_mobile = isset($settings['tour_height_mobile']) ? $settings['tour_height_mobile'] : (isset($settings['custom_aspect_ratio_mobile']) ? $settings['custom_aspect_ratio_mobile'] :  $settings['aspect_ratio_mobile']);
+		$skin_variables = array(
+			[
+				"variable" => "hotspotFarbe",
+				"value" => isset($settings['hotspot_color']) ? $settings['hotspot_color'] : "#ae8b57",
+			]
+		);
 
-<div id="<?php echo $params['containerID_noStr']?>">
-		</div>
+		?>
 		
+		<div id=<?php echo $containerID?>>
+		</div>
 		<script>
-		var throttled = false;
-		var pano_360ty_<?echo $params["view_id_noStr"]?>;
+		var tour_360ty_<?echo $viewID?>;
+		function chooseBool(value){
+			let returnVal;
+			value === ("no" || false || "false") ? returnVal = false : returnVal = true;
+			return returnVal;
+		}
+		function init(){
+			tour_360ty_<?echo $viewID?> = new Pano_360ty(<?php echo "'".$containerID."','".$settings['basepath']."','".$viewID."'"?>);
+			tour_360ty_<?echo $viewID?>.suffix = "<?echo $viewID?>";
+			tour_360ty_<?echo $viewID?>.setDimensions(<?php echo "'".$settings['tour_width']."','".$tourheight_desktop."'"?>);
+			tour_360ty_<?echo $viewID?>.setHorizontalAlignment(<?php echo "'".$settings['horizontal_alignment']."'"?>);
+			tour_360ty_<?echo $viewID?>.setStartNode(<?php echo $settings['startnodeID']?>);
+			tour_360ty_<?echo $viewID?>.setViewingParameter(<?php echo $settings['fov']['size'].",".$settings['tilt']['size'].",".$settings['pan']['size']?>);
+			tour_360ty_<?echo $viewID?>.setSingleImage(<?php echo $settings['single_image'] === "true"? "true" : "false" ?>);
+			tour_360ty_<?echo $viewID?>.setShareButtonVisibility(<?php echo $settings['share_buttons']  === "true"? "true" : "false" ?>);
+			tour_360ty_<?echo $viewID?>.setImpressumVisibility(<?php echo $settings['show_impressum'] === "true"? "true" : "false" ?>);
+			tour_360ty_<?echo $viewID?>.setSkinVariables(<?php echo json_encode($skin_variables)?>);
+			tour_360ty_<?echo $viewID?>.setMovementLoopAmount(<?php echo $settings['loop_amount']?>);
+			tour_360ty_<?echo $viewID?>.setMovementDelay(parseInt(<?php echo $settings['movement_delay']?>));
+			<?php
+			if($settings['keyframes']){
+				foreach($settings['keyframes'] as $keyframe){
+					echo 'tour_360ty_'.$viewID.'.addKeyframe('.$keyframe['fov']['size'].','.$keyframe['tilt']['size'].','.$keyframe['pan']['size'].','.$keyframe['movement_speed'].',"'.$keyframe['movement_lock_controls'].'",'.$keyframe['nodeID'].');';
+				}
+			}
+			?>			
+			//responsive params
+			tour_360ty_<?echo $viewID?>.setDimensions_tablet(<?php echo "'".$settings['tour_width_tablet']."','".$tourheight_tablet."'"?>);
+			tour_360ty_<?echo $viewID?>.setHorizontalAlignment_tablet(<?php echo "'".$settings['horizontal_alignment_tablet']."'"?>);
+			tour_360ty_<?echo $viewID?>.setSingleImage_tablet(<?php echo $settings['single_image_tablet']=== "true"? "true" : "false"?>);
+			tour_360ty_<?echo $viewID?>.setShareButtonVisibility_tablet(<?php echo $settings['share_buttons_tablet']=== "true"? "true" : "false"?>);
+			tour_360ty_<?echo $viewID?>.setImpressumVisibility_tablet(<?php echo $settings['show_impressum_tablet']=== "true"? "true" : "false"?>);
+			tour_360ty_<?echo $viewID?>.setDimensions_mobile(<?php echo "'".$settings['tour_width_mobile']."','".$tourheight_mobile."'"?>);
+			tour_360ty_<?echo $viewID?>.setHorizontalAlignment_mobile(<?php echo "'".$settings['horizontal_alignment_mobile']."'"?>);
+			tour_360ty_<?echo $viewID?>.setSingleImage_mobile(<?php echo $settings['single_image_mobile']=== "true"? "true" : "false"?>);
+			tour_360ty_<?echo $viewID?>.setShareButtonVisibility_mobile(<?php echo $settings['share_buttons_mobile']=== "true"? "true" : "false"?>);
+			tour_360ty_<?echo $viewID?>.setImpressumVisibility_mobile(<?php echo $settings['show_impressum_mobile']=== "true"? "true" : "false"?>);			
+			tour_360ty_<?echo $viewID?>.init();
+		}
 		if(window["elementor"]){
-			pano_360ty_<?echo $params["view_id_noStr"]?> = new Elementor_360ty(<?php echo $paramsstring?>);
-			pano_360ty_<?echo $params["view_id_noStr"]?>.init();
+			init();
 		}else{
 			window.addEventListener("load",function(){
-				pano_360ty_<?echo $params["view_id_noStr"]?> = new Elementor_360ty(<?php echo $paramsstring?>);
-				pano_360ty_<?echo $params["view_id_noStr"]?>.init();
+				init();
 			});
 		}
 		</script>
 		<?php
 	}
-
 }
