@@ -1,9 +1,32 @@
+.panel-farbe {
+  border-color: #ae8b57 !important;
+}
+.panel-hotspot-farbe {
+  border-color: #ae8b57 !important;
+  background-color: #ae8b5720 !important;
+}
+.panel-button-farbe {
+  background: #ae8b57 !important;
+}
+.panel-triangle {
+  width: 0 !important;
+  height: 0 !important;
+  border-top: 12px solid transparent !important;
+  border-bottom: 12px solid transparent !important;
+  border-left: 12px solid #ae8b57 !important;
+}
+@media (min-width: 500px) and (min-height: 750px) {
+  .panel-triangle {
+    width: 0 !important;
+    height: 0 !important;
+    border-top: 16px solid transparent !important;
+    border-bottom: 16px solid transparent !important;
+    border-left: 16px solid #ae8b57 !important;
+  }
+}
 [id^="tourbuilder_360ty_"] {
   display: block;
   overflow: hidden;
-  -webkit-transition: opacity 0.2s ease-in-out;
-  -moz-transition: opacity 0.2s ease-in-out;
-  transition: opacity 0.2s ease-in-out;
   z-index: 5;
 }
 [id^="pano_container_360ty_"] {
@@ -48,8 +71,8 @@
   position: relative;
   float: right;
   display: inline-block;
-  margin-top: 10px;
-  right: 4px;
+  margin-top: -32px;
+  right: 8px;
   z-index: 5;
 }
 [id^="impressum_360ty_"] a {
