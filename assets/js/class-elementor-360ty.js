@@ -14,7 +14,7 @@ class Pano_360ty{
 		  if (window[name] == this)
 			return name;
 };
-	this.suffix = suffix !== undefined ? suffix : "instance";
+	this.suffix = suffix !== "" ? suffix : (Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6));
 
 	this.elementIDs = {
 		parentContainer : parentContainerID,
@@ -29,7 +29,6 @@ class Pano_360ty{
 		class_shareButtons : "shareButton_360ty_"+this.suffix,
 		buttonContainer_value_setter : "buttonContainer_value_setter_360ty_"+this.suffix,
 		targetValueSetter_button : "setTargetValue_360ty_"+this.suffix,
-		startValueSetter_button : "setStartValues_360ty_"+this.suffix,
 		class_valueSetter_button : "valueSetter_360ty_"+this.suffix,
 	};
 	
@@ -45,7 +44,6 @@ class Pano_360ty{
 		FBshareButton : null,
 		buttonContainer_value_setter : null,
 		targetValueSetter_button : null,
-		startValueSetter_button : null,
 	};
 
 	this.tour_params = {
@@ -513,7 +511,33 @@ chooseHeight(){
 		}
 	}
 */
-
+removeOsterNodesInSkin(){
+	let i = 6;
+	while(this.pano.getVariableValue("apr"+i)!== undefined){
+		this.pano.setVariableValue("apr"+i,true);
+		i++;
+	}
+}
+removeOsterNodes(){
+	var hotspots = this.pano.getCurrentPointHotspots();
+	var hotspotIDs = this.pano.getPointHotspotIds();
+	for(let i = 0; i < hotspots.length; i++){
+		var elToSearch = hotspots[i].firstElementChild.firstElementChild;
+		if(elToSearch && elToSearch.nodeName === "IMG" && (elToSearch.src.includes("Oster") || elToSearch.src.includes("oster"))){
+			this.pano.removeHotspot(hotspotIDs[i]);
+		}
+	}
+	this.pano.addListener("changenode",function(){
+		var hotspots = this.pano.getCurrentPointHotspots();
+		var hotspotIDs = this.pano.getPointHotspotIds();
+		for(let i = 0; i < hotspots.length; i++){
+			var elToSearch = hotspots[i].firstElementChild.firstElementChild;
+			if(elToSearch && elToSearch.nodeName === "IMG" && (elToSearch.src.includes("Oster") || elToSearch.src.includes("oster"))){
+				this.pano.removeHotspot(hotspotIDs[i]);
+			}
+		}
+	}.bind(this));
+}
 
 addMeta(metaName, metaContent){
 	var meta = document.createElement("meta");
@@ -555,6 +579,7 @@ setup_pano(){
 		if(this.skin_variables){
 			this.changeSkinVars();
 		}
+		this.removeOsterNodes();
 		this.pano_UpdateViewingParams();
 	
 }.bind(this))
@@ -806,7 +831,7 @@ for (var prop in this.tour_params){
 
 
 addHotspotListeners(){
-	var hotspots = this.elements.panoContainer.getElementsByClassName("ggskin_hotspot");
+	var hotspots = this.elements.panoContainer.querySelectorAll(".ggskin .ggskin_external");
 	for(let i = 0; i<hotspots.length;i++){
 	hotspots[i].addEventListener("mouseover",function(){
 	var timesCalled = 0;
@@ -826,6 +851,24 @@ addHotspotListeners(){
 		}
 	}.bind(this),10);
 	}.bind(this));
+	hotspots[i].addEventListener("touchstart",function(){
+		var timesCalled = 0;
+		var hn_interval = setInterval(function(){
+			if(timesCalled < 25){
+			if(this.pano && this.pano.hotspot){
+				var hotspot = this.pano.hotspot;
+			}
+			if(hotspot.url != ""){
+				this.hovered_node = hotspot;
+				clearInterval(hn_interval);
+			}else{
+				timesCalled++
+			}
+			}else{
+				clearInterval(hn_interval);
+			}
+		}.bind(this),10);
+		}.bind(this));
 	hotspots[i].addEventListener("mouseup",function(){
 		if(this.hovered_node.url.includes("http")){
 		var hotspotURL = this.hovered_node.url;
@@ -836,18 +879,33 @@ addHotspotListeners(){
 		var nodeID = hotspotURL.substring(nodeIndex,hotspotURL.length);
 		this.tour_params.base_Tour = basepath;
 		this.tour_params.node = nodeID;
-		this.tour_params.fov = start_fov;
-		this.tour_params.pan = start_pan + 20;
-		this.tour_params.tilt = start_tilt;
+		this.keyframes = [];
+        this.reload();
+        this.externalHotspotListenerSet = false;
+	}
+	}.bind(this));
+	hotspots[i].addEventListener("touchend",function(e){
+		if(this.hovered_node.url.includes("http")){
+		var hotspotURL = this.hovered_node.url;
+		var basePathStartIndex = hotspotURL.indexOf("//")+2;
+		var basePathEndIndex = hotspotURL.indexOf("/",basePathStartIndex);
+		var basepath = hotspotURL.substring(0,basePathEndIndex+1);
+		var nodeIndex = hotspotURL.indexOf("#",basePathEndIndex)+5;
+		var nodeID = hotspotURL.substring(nodeIndex,hotspotURL.length);
+		this.tour_params.base_Tour = basepath;
+		this.tour_params.node = nodeID;
+		this.keyframes = [];
         this.setup_pano();
         this.externalHotspotListenerSet = false;
 	}
 	}.bind(this));
-    }
+	}
+	
     if(this.externalHotspotListenerSet == false){
         this.externalHotspotListenerSet = true;
         this.pano.addListener("changenode",function(){
-            this.addHotspotListeners();
+			this.addHotspotListeners();
+			this.removeOsterNodes();
         }.bind(this));
     }
 }
@@ -1056,14 +1114,14 @@ clearwebglContext(){
 */
 }
 class Elementor_360ty extends Pano_360ty{
-	constructor(parentContainerID,basepath, suffix){
-		super(...arguments);
-		this.viewID = suffix;
-		this.view = () => {
+	constructor(parentContainerID,basepath, suffix, viewID){
+		super(parentContainerID,basepath, suffix);
+		this.viewID = viewID;
+		this.view = function(){
 			return this.findViewById(this.viewID);
 		}
 		this.controlsListener = {};
-		this.elementorEditing = () => {
+		this.elementorEditing = function() {
 			if(window["elementor"]){
 				return true;
 			}else{
@@ -1073,7 +1131,7 @@ class Elementor_360ty extends Pano_360ty{
 	}
 	init(){
 		super.init();
-		let init_interval = setInterval(() =>{
+		let init_interval = setInterval(function(){
 			if(document.getElementById(this.elementIDs.parentContainer)){
 				clearInterval(init_interval);
 				if(this.elementorEditing() == true){
@@ -1084,7 +1142,7 @@ class Elementor_360ty extends Pano_360ty{
 					}
 				}
 			}
-		},100);
+		}.bind(this),100);
 	}
 	setValuesTargetButton_listener(){
 		var targetButtonInterval = setInterval(function(){
@@ -1092,6 +1150,24 @@ class Elementor_360ty extends Pano_360ty{
 				clearInterval(targetButtonInterval);
 				var button = window.parent.document.getElementsByClassName("elementor-control-set_target_values")[0].getElementsByTagName("button")[0];
 				button.addEventListener("mouseup",function(){
+					button.setAttribute('listener',true);
+					var container = this.view().getContainer();
+					var settings = this.view().getContainer().settings.attributes;
+					settings.basepath = this.pano.getBasePath();
+					settings.startnodeID = parseInt(this.pano.getCurrentNode().substring(4));
+					settings.fov.size = parseFloat(this.pano.getFov().toFixed(2));
+					settings.tilt.size = parseFloat(this.pano.getTilt().toFixed(2));
+					settings.pan.size = parseFloat(this.pano.getPan().toFixed(2));
+					
+					parent.window.$e.run("document/elements/settings", {
+						container: container,
+						settings: settings,
+						options: {
+							external: true
+						}
+					});
+				}.bind(this));
+				button.addEventListener("touchend",function(){
 					button.setAttribute('listener',true);
 					var container = this.view().getContainer();
 					var settings = this.view().getContainer().settings.attributes;
@@ -1120,15 +1196,15 @@ class Elementor_360ty extends Pano_360ty{
 		var aboveElement = this.elements.buttonContainer_value_setter;
 	
 		var targetButton = document.createElement("button");
-		targetButton.setAttribute("onclick",Pano_360ty.prototype+".updatePanoValues('target')");
+		targetButton.addEventListener("click",function(){
+			this.updatePanoValues()
+		}.bind(this));
 		targetButton.setAttribute("id",this.elementIDs.targetValueSetter_button);
 		targetButton.setAttribute("class",this.elementIDs.class_valueSetter_button);
 		targetButton.innerHTML = "set values to current position";
 		targetButton.style.width = "100%";
 		
-		aboveElement.appendChild(startButton);
 		aboveElement.appendChild(targetButton);
-		this.elements.startValueSetter_button = startButton;
 		this.elements.targetValueSetter_button = targetButton;
 	}
 	findViewById( id ){
@@ -1173,6 +1249,10 @@ class Elementor_360ty extends Pano_360ty{
 						this.toggle_responsive_control_visibility("aspect_ratio","custom_height","tour_height");
 						this.toggle_responsive_control_visibility("aspect_ratio","custom","custom_aspect_ratio");
 					}.bind(this));
+					window.parent.document.getElementById("elementor-panel-content-wrapper").addEventListener("touchend",function(){
+						this.toggle_responsive_control_visibility("aspect_ratio","custom_height","tour_height");
+						this.toggle_responsive_control_visibility("aspect_ratio","custom","custom_aspect_ratio");
+					}.bind(this));
 					window.addEventListener("resize", function(){
 						this.toggle_responsive_control_visibility("aspect_ratio","custom_height","tour_height");
 						this.toggle_responsive_control_visibility("aspect_ratio","custom","custom_aspect_ratio");
@@ -1184,7 +1264,7 @@ class Elementor_360ty extends Pano_360ty{
 			}else{
 				var controlsListenerInterval = setInterval(function(){
 					if(window.parent.document.getElementById("elementor-panel-content-wrapper")){
-						clearInterval(controlsListenerInterval);
+						//clearInterval(controlsListenerInterval);
 						this.add_responsive_control_listener();
 					}
 				}.bind(this),100);
@@ -1212,6 +1292,21 @@ class Elementor_360ty extends Pano_360ty{
 					this.toggleControl("mobile",controlName,compareValue,controlToHide,reverse);
 				}
 			}.bind(this));
+			control_desktop.addEventListener("touchend",function(){
+				if(this.deviceType() == "desktop"){
+					this.toggleControl("desktop",controlName,compareValue,controlToHide,reverse);
+				}
+			}.bind(this));
+			control_tablet.addEventListener("touchend",function(){
+				if(this.deviceType() == "tablet"){
+					this.toggleControl("tablet",controlName,compareValue,controlToHide,reverse);
+				}
+			}.bind(this));
+			control_mobile.addEventListener("touchend",function(){
+				if(this.deviceType() == "mobile"){
+					this.toggleControl("mobile",controlName,compareValue,controlToHide,reverse);
+				}
+			}.bind(this));
 		}else{
 			if(this.controlsListener[controlName] == undefined){
 				this.controlsListener[controlName] = {};
@@ -1227,7 +1322,7 @@ class Elementor_360ty extends Pano_360ty{
 			}
 		}
 	}
-	toggleControl = (type, controlName, compareValue, controlToHide, reverse) =>{
+	toggleControl(type, controlName, compareValue, controlToHide, reverse){
 	var controlsToHide = {
 		"desktop" : window.parent.document.getElementsByClassName("elementor-control-"+controlToHide)[0],
 		"tablet" : window.parent.document.getElementsByClassName("elementor-control-"+controlToHide+"_tablet")[0],
@@ -1306,17 +1401,15 @@ class Elementor_360ty extends Pano_360ty{
 		}
 	}
 	
-	updatePanoValues(type){
+	updatePanoValues(){
 			var container = this.view().getContainer();
 			var settings = this.view().getContainer().settings.attributes;
-			if(type == "start"){
-				settings.show_movement = "true";
-			}
+			
 			settings.basepath = this.pano.getBasePath();
 			settings.startnodeID = parseInt(this.pano.getCurrentNode().substring(4));
-			settings["fov_"+type].size = parseFloat(this.pano.getFov().toFixed(2));
-			settings["tilt_"+type].size = parseFloat(this.pano.getTilt().toFixed(2));
-			settings["pan_"+type].size = parseFloat(this.pano.getPan().toFixed(2));
+			settings.fov.size = parseFloat(this.pano.getFov().toFixed(2));
+			settings.tilt.size = parseFloat(this.pano.getTilt().toFixed(2));
+			settings.pan.size = parseFloat(this.pano.getPan().toFixed(2));
 		
 		parent.window.$e.run("document/elements/settings", {
 			container: container,

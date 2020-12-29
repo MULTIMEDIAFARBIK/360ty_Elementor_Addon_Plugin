@@ -132,21 +132,23 @@ class Tourbuilder extends Widget_Base{
 			]
 		);
 		$this->add_control(
-				'basepath',
+			'basepath',
 				[
 				'label'   => __( 'Basepath', 'tour-builder' ),
 				'type'    => Controls_Manager::TEXT,
-				'default' => __( 'https://bregenzsommer.360ty.cloud/', 'tour-builder' ),
+				'default' => __( 'https://lechwinter.360ty.cloud/', 'tour-builder' ),
 				'description' => ' base URI of the tour, where the pano2vr tour files are located. (http://*/)',
 				]
 		);
+		
 		$this->add_control(
 			'suffix',
 			[
 				'type'    => Controls_Manager::HIDDEN,
-				'default' => __(substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyz'), 0, 8), 'tour-builder' ),
+				'default' => RandomString(),
 			]
 		);
+		
 		/*$this->add_control(
 			'insert_current_target_values',
 			[
@@ -163,7 +165,7 @@ class Tourbuilder extends Widget_Base{
 				'type'    => Controls_Manager::NUMBER,
 				'min' => 1,
 				'step' => 1,
-				'default' => 1,
+				'default' => 4,
 				'description' => 'start node ID of the desired 360 image.'
 			]
 		);
@@ -187,7 +189,7 @@ class Tourbuilder extends Widget_Base{
 				'size_units' => ['deg'],
 				'range' => [
 						'deg' => [
-								'min' => 1,
+								'min' => 5,
 								'max' => 100,
 								'step' => 1,
 								],
@@ -229,9 +231,9 @@ class Tourbuilder extends Widget_Base{
 				'size_units' => ['deg'],
 				'range' => [
 							'deg' => [
-							'min' => -180,
-							'max' => 180,
-							'step' => 1,
+								'min' => -360,
+								'max' => 360,
+								'step' => 1,
 							],
 				],
 				'input_type' => 'number',
@@ -351,8 +353,8 @@ class Tourbuilder extends Widget_Base{
 				'size_units' => ['deg'],
 				'range' => [
 						'deg' => [
-								'min' => -180,
-								'max' => 180,
+								'min' => -360,
+								'max' => 360,
 								'step' => 1,
 								],
 						],
@@ -498,8 +500,8 @@ class Tourbuilder extends Widget_Base{
 							],
 				'devices' => ['desktop','tablet','mobile'],
 				'desktop_default' => "16:9",
-				'mobile_default' => "custom_height",
-				'tablet_default' => "custom_height",
+				'mobile_default' => "4:3",
+				'tablet_default' => "4:3",
 				]
 		);
 		$this->add_responsive_control(
@@ -587,18 +589,50 @@ class Tourbuilder extends Widget_Base{
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
-		$containerID = "container_360ty_".$settings["suffix"];
 		$viewID = $this->get_id();
-		$tourheight_desktop = isset($settings['tour_height']) ? $settings['tour_height'] : (isset($settings['custom_aspect_ratio']) ? $settings['custom_aspect_ratio'] :  $settings['aspect_ratio']);
-		$tourheight_tablet = isset($settings['tour_height_tablet']) ? $settings['tour_height_tablet'] : (isset($settings['custom_aspect_ratio_tablet']) ? $settings['custom_aspect_ratio_tablet'] :  $settings['aspect_ratio_tablet']);
-		$tourheight_mobile = isset($settings['tour_height_mobile']) ? $settings['tour_height_mobile'] : (isset($settings['custom_aspect_ratio_mobile']) ? $settings['custom_aspect_ratio_mobile'] :  $settings['aspect_ratio_mobile']);
+		$containerID = "container_360ty_".$viewID;
+		$tourheight_desktop;
+		$tourheight_tablet;
+		$tourheight_mobile;
 		$skin_variables = array(
 			[
-				"variable" => "hotspotFarbe",
-				"value" => isset($settings['hotspot_color']) ? $settings['hotspot_color'] : "#ae8b57",
+				"hotspotFarbe" => $settings['hotspot_color'],
 			]
 		);
 
+		switch($settings['aspect_ratio']){
+			case "custom":
+				$tourheight_desktop = $settings['custom_aspect_ratio'];
+				break;
+			case "custom_height":
+				$tourheight_desktop = $settings['tour_height'];
+				break;
+			default:
+				$tourheight_desktop = $settings['aspect_ratio'];
+				break;
+		}
+		switch($settings['aspect_ratio_tablet']){
+			case "custom":
+				$tourheight_tablet = $settings['custom_aspect_ratio_tablet'];
+				break;
+			case "custom_height":
+				$tourheight_tablet = $settings['tour_height_tablet'];
+				break;
+			default:
+				$tourheight_tablet = $settings['aspect_ratio_tablet'];
+				break;
+		}
+		switch($settings['aspect_ratio_mobile']){
+			case "custom":
+				$tourheight_mobile = $settings['custom_aspect_ratio_mobile'];
+				break;
+			case "custom_height":
+				$tourheight_mobile = $settings['tour_height_mobile'];
+				break;
+			default:
+				$tourheight_mobile = $settings['aspect_ratio_mobile'];
+				break;
+		}	
 		?>
 		
 		<div id=<?php echo $containerID?>>
@@ -610,9 +644,8 @@ class Tourbuilder extends Widget_Base{
 			value === ("no" || false || "false") ? returnVal = false : returnVal = true;
 			return returnVal;
 		}
-		function init(){
-			tour_360ty_<?echo $viewID?> = new Pano_360ty(<?php echo "'".$containerID."','".$settings['basepath']."','".$viewID."'"?>);
-			tour_360ty_<?echo $viewID?>.suffix = "<?echo $viewID?>";
+		function init(className){
+			tour_360ty_<?echo $viewID?> = new (className)(<?php echo "'".$containerID."','".$settings['basepath']."','"."','".$viewID."'"?>);
 			tour_360ty_<?echo $viewID?>.setDimensions(<?php echo "'".$settings['tour_width']."','".$tourheight_desktop."'"?>);
 			tour_360ty_<?echo $viewID?>.setHorizontalAlignment(<?php echo "'".$settings['horizontal_alignment']."'"?>);
 			tour_360ty_<?echo $viewID?>.setStartNode(<?php echo $settings['startnodeID']?>);
@@ -644,13 +677,22 @@ class Tourbuilder extends Widget_Base{
 			tour_360ty_<?echo $viewID?>.init();
 		}
 		if(window["elementor"]){
-			init();
+			init(Elementor_360ty);
 		}else{
 			window.addEventListener("load",function(){
-				init();
+				init(Pano_360ty);
 			});
 		}
 		</script>
 		<?php
 	}
 }
+function RandomString()
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randstring = '';
+        for ($i = 0; $i < 10; $i++) {
+            $randstring = $randstring.$characters[rand(0, strlen($characters)-1)];
+        }
+        return $randstring;
+	}
