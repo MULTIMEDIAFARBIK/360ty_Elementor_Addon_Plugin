@@ -11,7 +11,7 @@
  * @license    
  * @link       link(https://360ty.world)
  * @since      1.0.0
- * php version 7.3.9
+ * php version 7.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
