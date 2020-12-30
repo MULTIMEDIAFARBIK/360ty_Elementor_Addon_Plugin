@@ -644,7 +644,7 @@ class Tourbuilder extends Widget_Base{
 			value === ("no" || false || "false") ? returnVal = false : returnVal = true;
 			return returnVal;
 		}
-		function init(className){
+		function init_<?echo $viewID?>(className){
 			tour_360ty_<?echo $viewID?> = new (className)(<?php echo "'".$containerID."','".$settings['basepath']."','"."','".$viewID."'"?>);
 			tour_360ty_<?echo $viewID?>.setDimensions(<?php echo "'".$settings['tour_width']."','".$tourheight_desktop."'"?>);
 			tour_360ty_<?echo $viewID?>.setHorizontalAlignment(<?php echo "'".$settings['horizontal_alignment']."'"?>);
@@ -677,10 +677,10 @@ class Tourbuilder extends Widget_Base{
 			tour_360ty_<?echo $viewID?>.init();
 		}
 		if(window["elementor"]){
-			init(Elementor_360ty);
+			init_<?echo $viewID?>(Elementor_360ty);
 		}else{
 			window.addEventListener("load",function(){
-				init(Pano_360ty);
+				init_<?echo $viewID?>(Pano_360ty);
 			});
 		}
 		</script>
