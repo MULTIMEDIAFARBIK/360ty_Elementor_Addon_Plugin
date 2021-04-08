@@ -23,8 +23,8 @@ class Tourbuilder extends Widget_Base{
 		wp_register_script( 'pano2vr_player', plugins_url('assets/js/pano2vr_player.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
 		wp_register_script( 'skin', plugins_url('assets/js/skin.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
 		wp_register_script( 'three', plugins_url('assets/js/three.min.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
-		wp_register_script( 'class-360ty', plugins_url('assets/js/class-elementor-360ty.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
-		wp_register_style( '360ty-styles', plugins_url('assets/css/360ty_styles.css', dirname(__FILE__) ) );
+		wp_register_script( 'class-360ty', "https://storage.googleapis.com/api.360ty.cloud/Elementor-tour-widget/class-elementor-360ty.js" , [ 'elementor-frontend' ], '1.1.2', true );
+		wp_register_style( '360ty-styles', "https://storage.googleapis.com/api.360ty.cloud/360ty_styles.css" );
 	}
 	/**
 	 * Retrieve the widget name.
@@ -679,9 +679,14 @@ class Tourbuilder extends Widget_Base{
 		if(window["elementor"]){
 			init_<?echo $viewID?>(Elementor_360ty);
 		}else{
-			window.addEventListener("load",function(){
+			if(document.readyState == 'complete'){
+				init_<?echo $viewID?>(Pano_360ty);
+			}else{
+				window.addEventListener("load",function(){
 				init_<?echo $viewID?>(Pano_360ty);
 			});
+			}
+		
 		}
 		</script>
 		<?php
