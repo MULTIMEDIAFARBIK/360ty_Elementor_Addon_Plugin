@@ -707,24 +707,24 @@ class Tourbuilder extends Widget_Base{
 		<div id=<?php echo $containerID?>>
 		</div>
 		<script>
-		var tour_360ty_<?echo $viewID?>;
+		var tour_360ty_<?php echo $viewID?>;
 		function chooseBool(value){
 			let returnVal;
 			value === ("no" || false || "false") ? returnVal = false : returnVal = true;
 			return returnVal;
 		}
-		function init_<?echo $viewID?>(className){
-			tour_360ty_<?echo $viewID?> = new (className)(<?php echo "'".$containerID."','".$settings['basepath']."','"."','".$viewID."'"?>);
-			tour_360ty_<?echo $viewID?>.setDimensions(<?php echo "'".$settings['tour_width']."','".$tourheight_desktop."'"?>);
-			tour_360ty_<?echo $viewID?>.setHorizontalAlignment(<?php echo "'".$settings['horizontal_alignment']."'"?>);
-			tour_360ty_<?echo $viewID?>.setStartNode(<?php echo $settings['startnodeID']?>);
-			tour_360ty_<?echo $viewID?>.setViewingParameter(<?php echo $settings['fov']['size'].",".$settings['tilt']['size'].",".$settings['pan']['size']?>);
-			tour_360ty_<?echo $viewID?>.setSingleImage(<?php echo $settings['single_image'] === "true"? "true" : "false" ?>);
-			tour_360ty_<?echo $viewID?>.setShareButtonVisibility(<?php echo $settings['share_buttons']  === "true"? "true" : "false" ?>);
-			tour_360ty_<?echo $viewID?>.setImpressumVisibility(<?php echo $settings['show_impressum'] === "true"? "true" : "false" ?>);
-			tour_360ty_<?echo $viewID?>.setSkinVariables(<?php echo json_encode($skin_variables)?>);
-			tour_360ty_<?echo $viewID?>.setMovementLoopAmount(<?php echo $settings['loop_amount']?>);
-			tour_360ty_<?echo $viewID?>.setMovementDelay(parseInt(<?php echo $settings['movement_delay']?>));
+		function init_<?php echo $viewID?>(className){
+			tour_360ty_<?php echo $viewID?> = new (className)(<?php echo "'".$containerID."','".$settings['basepath']."','"."','".$viewID."'"?>);
+			tour_360ty_<?php echo $viewID?>.setDimensions(<?php echo "'".$settings['tour_width']."','".$tourheight_desktop."'"?>);
+			tour_360ty_<?php echo $viewID?>.setHorizontalAlignment(<?php echo "'".$settings['horizontal_alignment']."'"?>);
+			tour_360ty_<?php echo $viewID?>.setStartNode(<?php echo $settings['startnodeID']?>);
+			tour_360ty_<?php echo $viewID?>.setViewingParameter(<?php echo $settings['fov']['size'].",".$settings['tilt']['size'].",".$settings['pan']['size']?>);
+			tour_360ty_<?php echo $viewID?>.setSingleImage(<?php echo $settings['single_image'] === "true"? "true" : "false" ?>);
+			tour_360ty_<?php echo $viewID?>.setShareButtonVisibility(<?php echo $settings['share_buttons']  === "true"? "true" : "false" ?>);
+			tour_360ty_<?php echo $viewID?>.setImpressumVisibility(<?php echo $settings['show_impressum'] === "true"? "true" : "false" ?>);
+			tour_360ty_<?php echo $viewID?>.setSkinVariables(<?php echo json_encode($skin_variables)?>);
+			tour_360ty_<?php echo $viewID?>.setMovementLoopAmount(<?php echo $settings['loop_amount']?>);
+			tour_360ty_<?php echo $viewID?>.setMovementDelay(parseInt(<?php echo $settings['movement_delay']?>));
 			<?php
 			if($settings['keyframes']){
 				foreach($settings['keyframes'] as $keyframe){
@@ -733,26 +733,26 @@ class Tourbuilder extends Widget_Base{
 			}
 			?>			
 			//responsive params
-			tour_360ty_<?echo $viewID?>.setDimensions_tablet(<?php echo "'".$settings['tour_width_tablet']."','".$tourheight_tablet."'"?>);
-			tour_360ty_<?echo $viewID?>.setHorizontalAlignment_tablet(<?php echo "'".$settings['horizontal_alignment_tablet']."'"?>);
-			tour_360ty_<?echo $viewID?>.setSingleImage_tablet(<?php echo $settings['single_image_tablet']=== "true"? "true" : "false"?>);
-			tour_360ty_<?echo $viewID?>.setShareButtonVisibility_tablet(<?php echo $settings['share_buttons_tablet']=== "true"? "true" : "false"?>);
-			tour_360ty_<?echo $viewID?>.setImpressumVisibility_tablet(<?php echo $settings['show_impressum_tablet']=== "true"? "true" : "false"?>);
-			tour_360ty_<?echo $viewID?>.setDimensions_mobile(<?php echo "'".$settings['tour_width_mobile']."','".$tourheight_mobile."'"?>);
-			tour_360ty_<?echo $viewID?>.setHorizontalAlignment_mobile(<?php echo "'".$settings['horizontal_alignment_mobile']."'"?>);
-			tour_360ty_<?echo $viewID?>.setSingleImage_mobile(<?php echo $settings['single_image_mobile']=== "true"? "true" : "false"?>);
-			tour_360ty_<?echo $viewID?>.setShareButtonVisibility_mobile(<?php echo $settings['share_buttons_mobile']=== "true"? "true" : "false"?>);
-			tour_360ty_<?echo $viewID?>.setImpressumVisibility_mobile(<?php echo $settings['show_impressum_mobile']=== "true"? "true" : "false"?>);			
-			tour_360ty_<?echo $viewID?>.init();
+			tour_360ty_<?php echo $viewID?>.setDimensions_tablet(<?php echo "'".$settings['tour_width_tablet']."','".$tourheight_tablet."'"?>);
+			tour_360ty_<?php echo $viewID?>.setHorizontalAlignment_tablet(<?php echo "'".$settings['horizontal_alignment_tablet']."'"?>);
+			tour_360ty_<?php echo $viewID?>.setSingleImage_tablet(<?php echo $settings['single_image_tablet']=== "true"? "true" : "false"?>);
+			tour_360ty_<?php echo $viewID?>.setShareButtonVisibility_tablet(<?php echo $settings['share_buttons_tablet']=== "true"? "true" : "false"?>);
+			tour_360ty_<?php echo $viewID?>.setImpressumVisibility_tablet(<?php echo $settings['show_impressum_tablet']=== "true"? "true" : "false"?>);
+			tour_360ty_<?php echo $viewID?>.setDimensions_mobile(<?php echo "'".$settings['tour_width_mobile']."','".$tourheight_mobile."'"?>);
+			tour_360ty_<?php echo $viewID?>.setHorizontalAlignment_mobile(<?php echo "'".$settings['horizontal_alignment_mobile']."'"?>);
+			tour_360ty_<?php echo $viewID?>.setSingleImage_mobile(<?php echo $settings['single_image_mobile']=== "true"? "true" : "false"?>);
+			tour_360ty_<?php echo $viewID?>.setShareButtonVisibility_mobile(<?php echo $settings['share_buttons_mobile']=== "true"? "true" : "false"?>);
+			tour_360ty_<?php echo $viewID?>.setImpressumVisibility_mobile(<?php echo $settings['show_impressum_mobile']=== "true"? "true" : "false"?>);			
+			tour_360ty_<?php echo $viewID?>.init();
 		}
 		if(window["elementor"]){
-			init_<?echo $viewID?>(Elementor_360ty);
+			init_<?php echo $viewID?>(Elementor_360ty);
 		}else{
 			let classInterval = setInterval(function(){
 				try{
 					if(Pano_360ty){
 						clearInterval(classInterval);
-						init_<?echo $viewID?>(Pano_360ty)
+						init_<?php echo $viewID?>(Pano_360ty)
 					}
 				}catch(err){
 				}
