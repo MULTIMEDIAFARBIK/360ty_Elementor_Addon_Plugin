@@ -68,6 +68,7 @@ class Widgets {
 	 */
 	private function include_widgets_files() {
 		require_once 'widgets/class-tourbuilder.php';
+		//require_once 'widgets/class-slides3.php';
 	}
 	/**
 	 * Register Categories
@@ -101,6 +102,8 @@ class Widgets {
 
 		// Register the plugin widget classes.
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Tourbuilder() );
+		//\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Slides3() );
+
 	}
 	
 	/**

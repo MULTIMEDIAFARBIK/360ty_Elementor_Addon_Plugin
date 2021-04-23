@@ -129,6 +129,9 @@ class Tourbuilder extends Widget_Base{
 				'type' => \Elementor\Controls_Manager::RAW_HTML,
 				'raw' => __( 'Use the middle mouse button, to move in the tour!', 'tour-builder' ),
 				'content_classes' => '360ty_tourbuilder_controls_info elementor-control-field-description',
+				'dynamic' => [
+					'active' => true,
+				],
 			]
 		);
 		$this->add_control(
@@ -137,7 +140,10 @@ class Tourbuilder extends Widget_Base{
 				'label'   => __( 'Basepath', 'tour-builder' ),
 				'type'    => Controls_Manager::TEXT,
 				'default' => __( 'https://lechwinter.360ty.cloud/', 'tour-builder' ),
-				'description' => ' base URI of the tour, where the pano2vr tour files are located. (http://*/)',
+				'description' => ' base URI of the tour, where the pano2vr tour files are located. (https://*/)',
+				'dynamic' => [
+					'active' => true,
+				],
 				]
 		);
 		
@@ -166,7 +172,10 @@ class Tourbuilder extends Widget_Base{
 				'min' => 1,
 				'step' => 1,
 				'default' => 4,
-				'description' => 'start node ID of the desired 360 image.'
+				'description' => 'start node ID of the desired 360 image.',
+				'dynamic' => [
+					'active' => true,
+				],
 			]
 		);
 		/*
@@ -200,6 +209,9 @@ class Tourbuilder extends Widget_Base{
 							'unit' => 'deg',
 							'size' => 65,
 							],
+				'dynamic' => [
+					'active' => true,
+				],
 				]
 		);
 		$this->add_control(
@@ -217,6 +229,9 @@ class Tourbuilder extends Widget_Base{
 							],
 				'input_type' => 'number',
 				'description' => 'Vertical value of the starting position of the tour',
+				'dynamic' => [
+					'active' => true,
+				],
 				'default' => [
 							'unit' => 'deg',
 							'size' => 0,
@@ -229,6 +244,9 @@ class Tourbuilder extends Widget_Base{
 				'label' => __( 'Pan', 'tour-builder' ),
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => ['deg'],
+				'dynamic' => [
+					'active' => true,
+				],
 				'range' => [
 							'deg' => [
 								'min' => -360,
@@ -277,6 +295,9 @@ class Tourbuilder extends Widget_Base{
 				'min' => 0,
 				'step' => 100,
 				'default' => 0,
+				'dynamic' => [
+					'active' => true,
+				],
 				'description' => 'Starts the movement after x milliseconds',
 				]
 		);
@@ -288,6 +309,9 @@ class Tourbuilder extends Widget_Base{
 				'min' => 0,
 				'step' => 1,
 				'default' => 1,
+				'dynamic' => [
+					'active' => true,
+				],
 				'description' => 'How often the Keyframes should repeat. If the value is 0, the Movement will not be shown.',
 				]
 		);
@@ -300,6 +324,9 @@ class Tourbuilder extends Widget_Base{
 				'min' => 1,
 				'step' => 1,
 				'default' => 1,
+				'dynamic' => [
+					'active' => true,
+				],
 				'description' => 'node ID of the desired 360 image.'
 			]
 		);
@@ -309,6 +336,9 @@ class Tourbuilder extends Widget_Base{
 				'label' => __( 'FOV', 'tour-builder' ),
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => ['deg'],
+				'dynamic' => [
+					'active' => true,
+				],
 				'range' => [
 						'deg' => [
 								'min' => 1,
@@ -330,6 +360,9 @@ class Tourbuilder extends Widget_Base{
 				'label' => __( 'Tilt', 'tour-builder' ),
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => ['deg'],
+				'dynamic' => [
+					'active' => true,
+				],
 				'range' => [
 						'deg' => [
 								'min' => -90,
@@ -351,6 +384,9 @@ class Tourbuilder extends Widget_Base{
 				'label' => __( 'Pan', 'tour-builder' ),
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => ['deg'],
+				'dynamic' => [
+					'active' => true,
+				],
 				'range' => [
 						'deg' => [
 								'min' => -360,
@@ -374,6 +410,9 @@ class Tourbuilder extends Widget_Base{
 				'min' => 0.1,
 				'step' => 0.1,
 				'default' => 1,
+				'dynamic' => [
+					'active' => true,
+				],
 				'description' => 'Speed of the movement. Value 0.5 = 0.5x quicker, value 2 = 2x quicker, value 3 = 3x quicker...',
 				],
 		);
@@ -383,6 +422,9 @@ class Tourbuilder extends Widget_Base{
 				'label' => __( 'Lock controls', 'tour-builder' ),
 				'type' => \Elementor\Controls_Manager::SELECT,
 				'default' => 'Mousewheel',
+				'dynamic' => [
+					'active' => true,
+				],
 				'options' => [
 					'all' => __( 'all', 'tour-builder' ),
 					'none' => __( 'none', 'tour-builder' ),
@@ -401,6 +443,9 @@ class Tourbuilder extends Widget_Base{
 				'type' => Controls_Manager::REPEATER,
 				'fields' => $repeater->get_controls(),
 				'title_field' => 'Keyframe',
+				'dynamic' => [
+					'active' => true,
+				],
 				'description' => 'Each Keyframe has a position, where it will move to from the previous Keyframe. The first Keyframe moves from the starting Position.',
 				]
 		);
@@ -425,6 +470,9 @@ class Tourbuilder extends Widget_Base{
 					'desktop_default' => "no",
 					'mobile_default' => "no",
 					'tablet_default' => "no",
+					'dynamic' => [
+						'active' => true,
+					],
 					'discription' => 'If only the start hotspot should be displayed. Removes all nodes to change hotspots.',
 				]
 		);
@@ -440,6 +488,9 @@ class Tourbuilder extends Widget_Base{
 				'desktop_default' => "no",
 				'mobile_default' => "no",
 				'tablet_default' => "no",
+				'dynamic' => [
+					'active' => true,
+				],
 				'discription' => 'Include share buttons for facebook and as an URL  to the current location',
 				]
 		);
@@ -456,6 +507,9 @@ class Tourbuilder extends Widget_Base{
 				'desktop_default' => "yes",
 				'mobile_default' => "yes",
 				'tablet_default' => "yes",
+				'dynamic' => [
+					'active' => true,
+				],
 				]
 		);
 		
@@ -480,6 +534,9 @@ class Tourbuilder extends Widget_Base{
 				'desktop_default' => "100%",
 				'mobile_default' => "100%",
 				'tablet_default' => "100%",
+				'dynamic' => [
+					'active' => true,
+				],
 				],
 				
 		);
@@ -502,6 +559,9 @@ class Tourbuilder extends Widget_Base{
 				'desktop_default' => "16:9",
 				'mobile_default' => "4:3",
 				'tablet_default' => "4:3",
+				'dynamic' => [
+					'active' => true,
+				],
 				]
 		);
 		$this->add_responsive_control(
@@ -523,6 +583,9 @@ class Tourbuilder extends Widget_Base{
 				'desktop_default' => "75%",
 				'mobile_default' => "200%",
 				'tablet_default' => "200%",
+				'dynamic' => [
+					'active' => true,
+				],
 				]
 		);
 		$this->add_responsive_control(
@@ -539,6 +602,9 @@ class Tourbuilder extends Widget_Base{
 				'desktop_default' => "center",
 				'mobile_default' => "center",
 				'tablet_default' => "center",
+				'dynamic' => [
+					'active' => true,
+				],
 				],
 		);
 		$this->end_controls_section();
@@ -561,6 +627,9 @@ class Tourbuilder extends Widget_Base{
 						'value' => \Elementor\Scheme_Color::COLOR_1,
 						],
 			'description' => __( 'Color of the pulsating effect', 'tour-builder' ),
+			'dynamic' => [
+				'active' => true,
+			],
 			],
 		);
 		$this->end_controls_section();
@@ -679,13 +748,16 @@ class Tourbuilder extends Widget_Base{
 		if(window["elementor"]){
 			init_<?echo $viewID?>(Elementor_360ty);
 		}else{
-			if(document.readyState == 'complete'){
-				init_<?echo $viewID?>(Pano_360ty);
-			}else{
-				window.addEventListener("load",function(){
-				init_<?echo $viewID?>(Pano_360ty);
-			});
-			}
+			let classInterval = setInterval(function(){
+				try{
+					if(Pano_360ty){
+						clearInterval(classInterval);
+						init_<?echo $viewID?>(Pano_360ty)
+					}
+				}catch(err){
+				}
+
+			},50)
 		
 		}
 		</script>
