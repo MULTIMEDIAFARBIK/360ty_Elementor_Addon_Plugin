@@ -564,6 +564,15 @@ class Tourbuilder extends Widget_Base{
 				],
 				]
 		);
+		$this->add_group_control(
+			\Elementor\Group_Control_Background::get_type(),
+			[
+				'name' => 'background',
+				'label' => __( 'Background', 'plugin-domain' ),
+				'types' => [ 'classic', 'gradient', 'image' ],
+				'description' => 'Placeholder before the tour is loaded'
+			]
+		);
 		$this->add_responsive_control(
 				'custom_aspect_ratio',
 				[
@@ -703,7 +712,6 @@ class Tourbuilder extends Widget_Base{
 				break;
 		}	
 		?>
-		
 		<div id=<?php echo $containerID?>>
 		</div>
 		<script>
@@ -714,36 +722,40 @@ class Tourbuilder extends Widget_Base{
 			return returnVal;
 		}
 		function init_<?php echo $viewID?>(className){
-			tour_360ty_<?php echo $viewID?> = new (className)(<?php echo "'".$containerID."','".$settings['basepath']."','"."','".$viewID."'"?>);
-			tour_360ty_<?php echo $viewID?>.setDimensions(<?php echo "'".$settings['tour_width']."','".$tourheight_desktop."'"?>);
-			tour_360ty_<?php echo $viewID?>.setHorizontalAlignment(<?php echo "'".$settings['horizontal_alignment']."'"?>);
-			tour_360ty_<?php echo $viewID?>.setStartNode(<?php echo $settings['startnodeID']?>);
-			tour_360ty_<?php echo $viewID?>.setViewingParameter(<?php echo $settings['fov']['size'].",".$settings['tilt']['size'].",".$settings['pan']['size']?>);
-			tour_360ty_<?php echo $viewID?>.setSingleImage(<?php echo $settings['single_image'] === "true"? "true" : "false" ?>);
-			tour_360ty_<?php echo $viewID?>.setShareButtonVisibility(<?php echo $settings['share_buttons']  === "true"? "true" : "false" ?>);
-			tour_360ty_<?php echo $viewID?>.setImpressumVisibility(<?php echo $settings['show_impressum'] === "true"? "true" : "false" ?>);
-			tour_360ty_<?php echo $viewID?>.setSkinVariables(<?php echo json_encode($skin_variables)?>);
-			tour_360ty_<?php echo $viewID?>.setMovementLoopAmount(<?php echo $settings['loop_amount']?>);
-			tour_360ty_<?php echo $viewID?>.setMovementDelay(parseInt(<?php echo $settings['movement_delay']?>));
-			<?php
-			if($settings['keyframes']){
-				foreach($settings['keyframes'] as $keyframe){
-					echo 'tour_360ty_'.$viewID.'.addKeyframe('.$keyframe['fov']['size'].','.$keyframe['tilt']['size'].','.$keyframe['pan']['size'].','.$keyframe['movement_speed'].',"'.$keyframe['movement_lock_controls'].'",'.$keyframe['nodeID'].');';
+			if(tour_360ty_<?php echo $viewID?>){
+				tour_360ty_<?php echo $viewID?>.reload();
+			}else{
+				tour_360ty_<?php echo $viewID?> = new (className)(<?php echo "'".$containerID."','".$settings['basepath']."','"."','".$viewID."'"?>);
+				tour_360ty_<?php echo $viewID?>.setDimensions(<?php echo "'".$settings['tour_width']."','".$tourheight_desktop."'"?>);
+				tour_360ty_<?php echo $viewID?>.setHorizontalAlignment(<?php echo "'".$settings['horizontal_alignment']."'"?>);
+				tour_360ty_<?php echo $viewID?>.setStartNode(<?php echo $settings['startnodeID']?>);
+				tour_360ty_<?php echo $viewID?>.setViewingParameter(<?php echo $settings['fov']['size'].",".$settings['tilt']['size'].",".$settings['pan']['size']?>);
+				tour_360ty_<?php echo $viewID?>.setSingleImage(<?php echo $settings['single_image'] === "true"? "true" : "false" ?>);
+				tour_360ty_<?php echo $viewID?>.setShareButtonVisibility(<?php echo $settings['share_buttons']  === "true"? "true" : "false" ?>);
+				tour_360ty_<?php echo $viewID?>.setImpressumVisibility(<?php echo $settings['show_impressum'] === "true"? "true" : "false" ?>);
+				tour_360ty_<?php echo $viewID?>.setSkinVariables(<?php echo json_encode($skin_variables)?>);
+				tour_360ty_<?php echo $viewID?>.setMovementLoopAmount(<?php echo $settings['loop_amount']?>);
+				tour_360ty_<?php echo $viewID?>.setMovementDelay(parseInt(<?php echo $settings['movement_delay']?>));
+				<?php
+				if($settings['keyframes']){
+					foreach($settings['keyframes'] as $keyframe){
+						echo 'tour_360ty_'.$viewID.'.addKeyframe('.$keyframe['fov']['size'].','.$keyframe['tilt']['size'].','.$keyframe['pan']['size'].','.$keyframe['movement_speed'].',"'.$keyframe['movement_lock_controls'].'",'.$keyframe['nodeID'].');';
+					}
 				}
+				?>			
+				//responsive params
+				tour_360ty_<?php echo $viewID?>.setDimensions_tablet(<?php echo "'".$settings['tour_width_tablet']."','".$tourheight_tablet."'"?>);
+				tour_360ty_<?php echo $viewID?>.setHorizontalAlignment_tablet(<?php echo "'".$settings['horizontal_alignment_tablet']."'"?>);
+				tour_360ty_<?php echo $viewID?>.setSingleImage_tablet(<?php echo $settings['single_image_tablet']=== "true"? "true" : "false"?>);
+				tour_360ty_<?php echo $viewID?>.setShareButtonVisibility_tablet(<?php echo $settings['share_buttons_tablet']=== "true"? "true" : "false"?>);
+				tour_360ty_<?php echo $viewID?>.setImpressumVisibility_tablet(<?php echo $settings['show_impressum_tablet']=== "true"? "true" : "false"?>);
+				tour_360ty_<?php echo $viewID?>.setDimensions_mobile(<?php echo "'".$settings['tour_width_mobile']."','".$tourheight_mobile."'"?>);
+				tour_360ty_<?php echo $viewID?>.setHorizontalAlignment_mobile(<?php echo "'".$settings['horizontal_alignment_mobile']."'"?>);
+				tour_360ty_<?php echo $viewID?>.setSingleImage_mobile(<?php echo $settings['single_image_mobile']=== "true"? "true" : "false"?>);
+				tour_360ty_<?php echo $viewID?>.setShareButtonVisibility_mobile(<?php echo $settings['share_buttons_mobile']=== "true"? "true" : "false"?>);
+				tour_360ty_<?php echo $viewID?>.setImpressumVisibility_mobile(<?php echo $settings['show_impressum_mobile']=== "true"? "true" : "false"?>);			
+				tour_360ty_<?php echo $viewID?>.init();
 			}
-			?>			
-			//responsive params
-			tour_360ty_<?php echo $viewID?>.setDimensions_tablet(<?php echo "'".$settings['tour_width_tablet']."','".$tourheight_tablet."'"?>);
-			tour_360ty_<?php echo $viewID?>.setHorizontalAlignment_tablet(<?php echo "'".$settings['horizontal_alignment_tablet']."'"?>);
-			tour_360ty_<?php echo $viewID?>.setSingleImage_tablet(<?php echo $settings['single_image_tablet']=== "true"? "true" : "false"?>);
-			tour_360ty_<?php echo $viewID?>.setShareButtonVisibility_tablet(<?php echo $settings['share_buttons_tablet']=== "true"? "true" : "false"?>);
-			tour_360ty_<?php echo $viewID?>.setImpressumVisibility_tablet(<?php echo $settings['show_impressum_tablet']=== "true"? "true" : "false"?>);
-			tour_360ty_<?php echo $viewID?>.setDimensions_mobile(<?php echo "'".$settings['tour_width_mobile']."','".$tourheight_mobile."'"?>);
-			tour_360ty_<?php echo $viewID?>.setHorizontalAlignment_mobile(<?php echo "'".$settings['horizontal_alignment_mobile']."'"?>);
-			tour_360ty_<?php echo $viewID?>.setSingleImage_mobile(<?php echo $settings['single_image_mobile']=== "true"? "true" : "false"?>);
-			tour_360ty_<?php echo $viewID?>.setShareButtonVisibility_mobile(<?php echo $settings['share_buttons_mobile']=== "true"? "true" : "false"?>);
-			tour_360ty_<?php echo $viewID?>.setImpressumVisibility_mobile(<?php echo $settings['show_impressum_mobile']=== "true"? "true" : "false"?>);			
-			tour_360ty_<?php echo $viewID?>.init();
 		}
 		if(window["elementor"]){
 			init_<?php echo $viewID?>(Elementor_360ty);
