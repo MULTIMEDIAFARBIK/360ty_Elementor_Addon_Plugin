@@ -7,7 +7,7 @@
  * Plugin Name: 360ty Elementor Addon
  * Description: Elementor Widgets for 360ty Pano2VR 360 Panorama Tours
  * Plugin URI:  
- * Version:     1.1.3
+ * Version:     1.1.5
  * Author:      360ty - Multimediafabrik
  * Author URI:  https://360ty.world
  * Text Domain: 360ty
