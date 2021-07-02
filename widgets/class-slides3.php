@@ -20,16 +20,10 @@ class Slides3 extends Widget_Base{
 
 	public function __construct( $data = [], $args = null ) {
 		parent::__construct( $data, $args );
-		wp_register_script( 'pano2vr_player', plugins_url('assets/js/pano2vr_player.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
-		wp_register_script( 'skin', plugins_url('assets/js/skin.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
-		wp_register_script( 'three', plugins_url('assets/js/three.min.js', dirname(__FILE__) ), [ 'elementor-frontend' ], '1.0.0', true );
-		wp_register_script( 'class-tourbuilder', "https://storage.googleapis.com/api.360ty.cloud/Elementor-tour-widget/class-elementor-360ty.js" , [ 'elementor-frontend' ], '1.1.2', true );
         wp_register_script( 'class-slides3', "https://storage.googleapis.com/api.360ty.cloud/slides3/js/slides3.js" , [ 'elementor-frontend' ], '1.0.0', true );
-        wp_register_script( 'class-slides3-map',"https://storage.googleapis.com/api.360ty.cloud/slides3/js/slides3.js.map" , [ 'elementor-frontend' ], '1.0.0', true );
 
         wp_register_style( '360ty-styles', "https://storage.googleapis.com/api.360ty.cloud/360ty_styles.css" );
         wp_register_style( 'slides3-styles', "https://storage.googleapis.com/api.360ty.cloud/slides3/css/slides3.css" );
-        wp_register_style( 'slides3-styles-map', "https://storage.googleapis.com/api.360ty.cloud/slides3/css/slides3.css.map" );
 
 	}
 	/**
@@ -93,7 +87,7 @@ class Slides3 extends Widget_Base{
 	 * Enqueue styles.
 	 */
 	public function get_style_depends() {
-		$styles = ['360ty-styles','slides3-styles','slides3-styles-map'];
+		$styles = ['360ty-styles','slides3-styles'];
 	
 		return $styles;
 	}
@@ -101,7 +95,7 @@ class Slides3 extends Widget_Base{
 	 * Enqueue scripts.
 	 */
 	public function get_script_depends() {
-		$scripts = ['pano2vr_player','three','skin','class-360ty','class-slides3','class-slides3-map'];
+		$scripts = ['class-slides3'];
 	
 		return $scripts;
 	}
@@ -118,7 +112,43 @@ class Slides3 extends Widget_Base{
 	 */
 	
 	protected function _register_controls() {
-        
+        $this->start_controls_section(
+			'settings_section',
+			[
+				'label' => __( 'Settings', 'slides3' ),
+				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+			]
+		);
+            $this->add_control(
+                'load_tour',
+                    [
+                    'type'    => Controls_Manager::SWITCHER,
+                    'label'   => __( 'Load Tour', 'slides3' ),
+                    'label_on' => __( 'yes', 'slides3' ),
+                    'label_off' => __( 'no', 'slides3' ),
+                    'return_value' => 'true',
+                    'default' => 'false',
+                    'dynamic' => [
+                        'active' => true,
+                    ],
+                    'description' => 'turn this off to save ressources in the Elementor Editor. The tour will still load normally on the live page',
+                    ]
+            );
+            $this->add_control(
+                'show_screenshot_button',
+                [
+                    'type'    => Controls_Manager::SWITCHER,
+                    'label' => __( 'Screenshot Studio Button', 'slides3' ),
+                    'label_on' => __( 'Show', 'slides3' ),
+                    'label_off' => __( 'Hide', 'slides3' ),
+                    'return_value' => 'show',
+                    'default' => 'show',
+                    'dynamic' => [
+                        'active' => true,
+                    ],
+                ]
+            );
+        $this->end_controls_section();
 		$this->start_controls_section(
 			'homeslide_section',
 			[
@@ -126,21 +156,7 @@ class Slides3 extends Widget_Base{
 				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
 			]
 		);
-        $this->add_control(
-            'load_tour',
-                [
-                'type'    => Controls_Manager::SWITCHER,
-                'label'   => __( 'Load Tour', 'slides3' ),
-                'label_on' => __( 'yes', 'slides3' ),
-                'label_off' => __( 'no', 'slides3' ),
-                'return_value' => 'true',
-                'default' => 'false',
-                'dynamic' => [
-                    'active' => true,
-                ],
-                'description' => 'turn this off to save ressources in the Elementor Editor. The tour will still load normally on the live page',
-                ]
-        );
+       
             $this->start_controls_tabs(
                 'slides3_homeslide_tabs'
             );
@@ -412,6 +428,20 @@ class Slides3 extends Widget_Base{
                     ]
                 );
                     $this->add_control(
+                        'showAboutUs',
+                        [
+                            'type'    => Controls_Manager::SWITCHER,
+                            'label' => __( 'About us & Partner', 'slides3' ),
+                            'label_on' => __( 'Show', 'slides3' ),
+                            'label_off' => __( 'Hide', 'slides3' ),
+                            'return_value' => 'show',
+                            'default' => 'show',
+                            'dynamic' => [
+                                'active' => true,
+                            ],
+                        ]
+                    );
+                    $this->add_control(
                         'about-us_headline',
                             [
                             'label'   => __( 'Headline', 'slides3' ),
@@ -419,6 +449,9 @@ class Slides3 extends Widget_Base{
                             'default' => __( 'Über uns', 'slides3' ),
                             'dynamic' => [
                                 'active' => true,
+                            ],
+                            'condition' => [
+                                'showAboutUs' => 'show'
                             ],
                             ]
                     );
@@ -431,6 +464,9 @@ class Slides3 extends Widget_Base{
                             'dynamic' => [
                                 'active' => true,
                             ],
+                            'condition' => [
+                                'showAboutUs' => 'show'
+                            ],
                             ]
                     );
                     $this->add_control(
@@ -441,6 +477,9 @@ class Slides3 extends Widget_Base{
                             'default' => __( '', 'slides3' ),
                             'dynamic' => [
                                 'active' => true,
+                            ],
+                            'condition' => [
+                                'showAboutUs' => 'show'
                             ],
                             ]
                     );
@@ -453,6 +492,9 @@ class Slides3 extends Widget_Base{
                             'dynamic' => [
                                 'active' => true,
                             ],
+                            'condition' => [
+                                'showAboutUs' => 'show'
+                            ],
                             ]
                     );
                 $this->end_controls_tab();
@@ -460,6 +502,7 @@ class Slides3 extends Widget_Base{
                     'partner_tab',
                     [
                         'label' => __( 'Partner', 'slides3' ),
+                        
                     ]
                 );
                     $partner_repeater = new \Elementor\Repeater();
@@ -509,7 +552,9 @@ class Slides3 extends Widget_Base{
                             'type' => Controls_Manager::REPEATER,
                             'fields' => $partner_repeater->get_controls(),
                             'title_field' => '{{{partner_name}}}',
-                            
+                            'condition' => [
+                                'showAboutUs' => 'show'
+                            ],
                             ]
                     );
                     $this->end_controls_tab();
@@ -582,20 +627,7 @@ class Slides3 extends Widget_Base{
                             ],
                         ]
                     );
-                    $slides_repeater->add_control(
-                        'slide_screenshot_button',
-                        [
-                            'type'    => Controls_Manager::SWITCHER,
-                            'label' => __( 'Screenshot Studio Button', 'slides3' ),
-                            'label_on' => __( 'Show', 'slides3' ),
-                            'label_off' => __( 'Hide', 'slides3' ),
-                            'return_value' => 'show',
-                            'default' => 'show',
-                            'dynamic' => [
-                                'active' => true,
-                            ],
-                        ]
-                    );
+                
                     $slides_repeater->add_control(
                         'slide_facebook_button_link',
                         [
@@ -810,11 +842,10 @@ class Slides3 extends Widget_Base{
         </style>
         <div id="slides_container" style="height:100%;width:100%;"></div>
         <script>
-            function init(){
+            function init_slides3(){
             document.getElementById("slides_container").parentElement.style.height="100%";
             document.getElementById("slides_container").parentElement.parentElement.style.height="100%";
             var slides3 = new Slides3("slides_container");
-            slides3.addPanoClass(Pano_360ty);
             <?php
             if($settings["load_tour"] !== 'true'){
                 $tourload = 'false';
@@ -825,7 +856,10 @@ class Slides3 extends Widget_Base{
             if(window["elementor"]){
                 slides3.setTourLoad(<?php echo $tourload ?>);
             }
-        
+            <?php if($settings['show_screenshot_button'] === "show") : ?>
+                slides3.setShowScreenshotButton(true);
+            <?php endif; ?>
+
             //homeslide
             slides3.createHomeSlide(<?php 
             if($settings['homeslide_background_type'] === "tour"){
@@ -839,7 +873,6 @@ class Slides3 extends Widget_Base{
 
             }?>);
 
-
             <?php if($settings["homeslide_headline"] !== "") :?>
                 slides3.addHomeslideHeadline("<?php echo $settings["homeslide_headline"] ?>");
             <?php endif;?>
@@ -852,41 +885,44 @@ class Slides3 extends Widget_Base{
             <?php endif;?>
             <?php echo getHomeslideBackground($settings); ?>
             
-            
             //about us
-            slides3.createAboutContainer();
-            slides3.addAboutUsHeadline("<?php echo $settings["about-us_headline"]?>");
-            <?php if($settings["about-us_subheadline"] !== "") :?>
-                slides3.addAboutUsSubHeadline("<?php echo $settings["about-us_subheadline"]?>");
-            <?php endif;?>
-            <?php if($settings["about-us_image"] !== "") :?>
-                slides3.addAboutUsImage("<?php echo $settings["about-us_image"]["url"]?>");
-            <?php endif;?>
-            <?php if($settings["about-us_description"] !== "") :?>
-                slides3.addAboutUsDescription(`<?php echo $settings["about-us_description"]?>`);
-            <?php endif;?>
-
-            //partners
-            <?php if(!empty($settings["partners"])) :?>
-                <?php
-                $partners = [];
-                foreach($settings["partners"] as $partner){
-                    $partner_array = [
-                        "link" => $partner["partner_link"]["url"],
-                        "imgURL" => $partner["partner_img"]["url"]
-                    ];
-                    if($partner["partner_link"]["url"] !== "" || $partner["partner_img"]["url"] !== "")
-                    array_push($partners,$partner_array);
-                }?>
-                <?php if(!empty($partners)) :?>
-                    slides3.addPartners(<?php echo json_encode($partners) ?>);
+            <?php if($settings["showAboutUs"] === "show") : ?>
+                slides3.setShowAboutUs(true);
+                slides3.createAboutContainer();
+                slides3.addAboutUsHeadline("<?php echo $settings["about-us_headline"]?>");
+                <?php if($settings["about-us_subheadline"] !== "") :?>
+                    slides3.addAboutUsSubHeadline("<?php echo $settings["about-us_subheadline"]?>");
                 <?php endif;?>
-            <?php endif;?>
+                <?php if($settings["about-us_image"] !== "") :?>
+                    slides3.addAboutUsImage("<?php echo $settings["about-us_image"]["url"]?>");
+                <?php endif;?>
+                <?php if($settings["about-us_description"] !== "") :?>
+                    slides3.addAboutUsDescription(`<?php echo $settings["about-us_description"]?>`);
+                <?php endif;?>
+
+                //partners
+                <?php if(!empty($settings["partners"])) :?>
+                    <?php
+                    $partners = [];
+                    foreach($settings["partners"] as $partner){
+                        $partner_array = [
+                            "link" => $partner["partner_link"]["url"],
+                            "imgURL" => $partner["partner_img"]["url"]
+                        ];
+                        if($partner["partner_link"]["url"] !== "" || $partner["partner_img"]["url"] !== "")
+                        array_push($partners,$partner_array);
+                    }?>
+                    <?php if(!empty($partners)) :?>
+                        slides3.addPartners(<?php echo json_encode($partners) ?>);
+                    <?php endif;?>
+                <?php endif;?>
+            <?php endif; ?>
             //nav
             slides3.createNav();
             <?php foreach($settings["navbar_socials"] as $social){
                 if($social["social_type"] !=="" && $social["social_url"]["url"] !== ""){
-                    echo 'slides3.addNavbarSocialButton("'.$social["social_type"].'", "'.$social["social_url"]["url"].'");';
+                    echo 'slides3.addNavbarSocialButton("'.$social["social_type"].'", "'.$social["social_url"]["url"].'");
+                    ';
                 }
             }
             ?>
@@ -910,10 +946,6 @@ class Slides3 extends Widget_Base{
                 }
                 echo '
                 slides3.addToSlideButtonContainer(slide'.$slide_index.',slides3.addSlideStartButton("'.$slide["slide_tourstart-button-label"].'"));';
-                if($slide["slide_screenshot_button"] === "show"){
-                    echo '
-                    slides3.addToSlideButtonContainer(slide'.$slide_index.',slides3.createScreenshotButton(slide'.$slide_index.'));';
-                }
                 if($slide["slide_facebook_button_link"]["url"] !== ""){
                     echo '
                     slides3.addSlideFacebookButton(slide'.$slide_index.',"'.$slide["slide_facebook_button_link"]["url"].'");';
@@ -934,19 +966,20 @@ class Slides3 extends Widget_Base{
                     echo '
                     slides3.addSlideLocation(slide'.$slide_index.',"'.$slide["slide_location"].'");';
                 }
+    
             }
             ?>
             //init
             slides3.init();
         }
         if(window["elementor"]){
-            init();
+            init_slides3();
         }else{
             let slidesInterval = setInterval(function(){
             try {
-                if (window["Slides3"] && window["Pano_360ty"]) {
+                if (window["Slides3"]) {
                     clearInterval(slidesInterval);
-                    init();
+                    init_slides3();
                 }
             }catch (err) {
             console.log(err);
