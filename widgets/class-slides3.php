@@ -861,7 +861,7 @@ class Slides3 extends Widget_Base{
             <?php endif; ?>
 
             //homeslide
-            var homeslide = new Homeslide(<?php 
+            var homeslide = new slides3.Homeslide(<?php 
             if($settings['homeslide_background_type'] === "tour"){
                 echo '{
                     basepath:"'.$settings["homeslide_background_tour_basepath"].'",
@@ -883,12 +883,11 @@ class Slides3 extends Widget_Base{
             <?php if($settings["homeslide_logo"] !== "") :?>
                 homeslide.addLogo("<?php echo $settings["homeslide_logo"]["url"] ?>","<?php echo $settings["homeslide_logo_link"]["url"] ?>");
             <?php endif;?>
-            slides3.addHomeslide(homeslide);
             <?php echo getHomeslideBackground($settings); ?>
             
             //about us
             <?php if($settings["showAboutUs"] === "show") : ?>
-                var aboutUs = new AboutUs();
+                var aboutUs = new slides3.AboutUs();
                 aboutUs.addHeadline("<?php echo $settings["about-us_headline"]?>");
                 <?php if($settings["about-us_subheadline"] !== "") :?>
                     aboutUs.addSubHeadline("<?php echo $settings["about-us_subheadline"]?>");
@@ -916,10 +915,9 @@ class Slides3 extends Widget_Base{
                         aboutUs.addPartners(<?php echo json_encode($partners) ?>);
                     <?php endif;?>
                 <?php endif;?>
-                slides3.addAboutUs(aboutUs);
             <?php endif; ?>
             //nav
-            var nav = new Nav();
+            var nav = new slides3.Nav();
             <?php foreach($settings["navbar_socials"] as $social){
                 if($social["social_type"] !=="" && $social["social_url"]["url"] !== ""){
                     echo 'nav.addSocialButton("'.$social["social_type"].'", "'.$social["social_url"]["url"].'");
@@ -927,7 +925,6 @@ class Slides3 extends Widget_Base{
                 }
             }
             ?>
-            slides3.addNav(nav);
             //slides 
             <?php 
             $vertical_slide_index = 0;
@@ -939,13 +936,11 @@ class Slides3 extends Widget_Base{
                 if($slide["slide_direction"] === "vertical"){
                     $vertical_slide_index++;
                     $slide_index = $vertical_slide_index;
-                    echo 'let slide'.$slide_index.' = new Slide('.json_encode($params).');';
-                    echo 'slides3.addSlide(slide'.$slide_index.')';
+                    echo 'let slide'.$slide_index.' = new slides3.Slide('.json_encode($params).');';
                 }else{
                     $horizontal_slide_index++;
                     $slide_index = $vertical_slide_index."_".$horizontal_slide_index;
-                    echo 'let slide'.$slide_index.' = new Subslide('.json_encode($params).');';
-                    echo 'slide'.$vertical_slide_index.'.addSubslide(slide'.$slide_index.');';
+                    echo 'let slide'.$slide_index.' = new slides3.Subslide(slide'.$vertical_slide_index.','.json_encode($params).');';
                 }
                 echo '
                 slide'.$slide_index.'.addStartButton("'.$slide["slide_tourstart-button-label"].'");';
