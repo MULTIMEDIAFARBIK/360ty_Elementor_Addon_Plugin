@@ -861,7 +861,7 @@ class Slides3 extends Widget_Base{
             <?php endif; ?>
 
             //homeslide
-            var homeslide = new slides3.Homeslide(<?php 
+            slides3.createHomeSlide(<?php 
             if($settings['homeslide_background_type'] === "tour"){
                 echo '{
                     basepath:"'.$settings["homeslide_background_tour_basepath"].'",
@@ -874,29 +874,30 @@ class Slides3 extends Widget_Base{
             }?>);
 
             <?php if($settings["homeslide_headline"] !== "") :?>
-                homeslide.addHeadline("<?php echo $settings["homeslide_headline"] ?>");
+                slides3.addHomeslideHeadline("<?php echo $settings["homeslide_headline"] ?>");
             <?php endif;?>
             <?php if($settings["homeslide_subheadline"] !== "") :?>
-                homeslide.addParagraph("<?php echo $settings["homeslide_subheadline"] ?>");
+                slides3.addHomeslideParagraph("<?php echo $settings["homeslide_subheadline"] ?>");
             <?php endif;?>
-                homeslide.addStartSlidesButton("<?php echo $settings["homeslide_startButton_text"] ?>");
+            slides3.addHomeslideStartSlidesButton("<?php echo $settings["homeslide_startButton_text"] ?>");
             <?php if($settings["homeslide_logo"] !== "") :?>
-                homeslide.addLogo("<?php echo $settings["homeslide_logo"]["url"] ?>","<?php echo $settings["homeslide_logo_link"]["url"] ?>");
+                slides3.addHomeslideLogo("<?php echo $settings["homeslide_logo"]["url"] ?>","<?php echo $settings["homeslide_logo_link"]["url"] ?>");
             <?php endif;?>
             <?php echo getHomeslideBackground($settings); ?>
             
             //about us
             <?php if($settings["showAboutUs"] === "show") : ?>
-                var aboutUs = new slides3.AboutUs();
-                aboutUs.addHeadline("<?php echo $settings["about-us_headline"]?>");
+                slides3.setShowAboutUs(true);
+                slides3.createAboutContainer();
+                slides3.addAboutUsHeadline("<?php echo $settings["about-us_headline"]?>");
                 <?php if($settings["about-us_subheadline"] !== "") :?>
-                    aboutUs.addSubHeadline("<?php echo $settings["about-us_subheadline"]?>");
+                    slides3.addAboutUsSubHeadline("<?php echo $settings["about-us_subheadline"]?>");
                 <?php endif;?>
                 <?php if($settings["about-us_image"] !== "") :?>
-                    aboutUs.addImage("<?php echo $settings["about-us_image"]["url"]?>");
+                    slides3.addAboutUsImage("<?php echo $settings["about-us_image"]["url"]?>");
                 <?php endif;?>
                 <?php if($settings["about-us_description"] !== "") :?>
-                    aboutUs.addDescription(`<?php echo $settings["about-us_description"]?>`);
+                    slides3.addAboutUsDescription(`<?php echo $settings["about-us_description"]?>`);
                 <?php endif;?>
 
                 //partners
@@ -912,19 +913,20 @@ class Slides3 extends Widget_Base{
                         array_push($partners,$partner_array);
                     }?>
                     <?php if(!empty($partners)) :?>
-                        aboutUs.addPartners(<?php echo json_encode($partners) ?>);
+                        slides3.addPartners(<?php echo json_encode($partners) ?>);
                     <?php endif;?>
                 <?php endif;?>
             <?php endif; ?>
             //nav
-            var nav = new slides3.Nav();
+            slides3.createNav();
             <?php foreach($settings["navbar_socials"] as $social){
                 if($social["social_type"] !=="" && $social["social_url"]["url"] !== ""){
-                    echo 'nav.addSocialButton("'.$social["social_type"].'", "'.$social["social_url"]["url"].'");
+                    echo 'slides3.addNavbarSocialButton("'.$social["social_type"].'", "'.$social["social_url"]["url"].'");
                     ';
                 }
             }
             ?>
+         
             //slides 
             <?php 
             $vertical_slide_index = 0;
@@ -936,40 +938,40 @@ class Slides3 extends Widget_Base{
                 if($slide["slide_direction"] === "vertical"){
                     $vertical_slide_index++;
                     $slide_index = $vertical_slide_index;
-                    echo 'let slide'.$slide_index.' = new slides3.Slide('.json_encode($params).');';
+                    echo 'let slide'.$slide_index.' = slides3.createSlide('.json_encode($params).');';
                 }else{
                     $horizontal_slide_index++;
                     $slide_index = $vertical_slide_index."_".$horizontal_slide_index;
-                    echo 'let slide'.$slide_index.' = new slides3.Subslide(slide'.$vertical_slide_index.','.json_encode($params).');';
+                    echo 'let slide'.$slide_index.' = slides3.createSubSlide(slide'.$vertical_slide_index.','.json_encode($params).');';
                 }
                 echo '
-                slide'.$slide_index.'.addStartButton("'.$slide["slide_tourstart-button-label"].'");';
+                slides3.addToSlideButtonContainer(slide'.$slide_index.',slides3.addSlideStartButton("'.$slide["slide_tourstart-button-label"].'"));';
                 if($slide["slide_facebook_button_link"]["url"] !== ""){
                     echo '
-                    slide'.$slide_index.'.addFacebookButton("'.$slide["slide_facebook_button_link"]["url"].'");';
+                    slides3.addSlideFacebookButton(slide'.$slide_index.',"'.$slide["slide_facebook_button_link"]["url"].'");';
                 }
                 if($slide["slide_headline"] !== ""){
                     echo '
-                    slide'.$slide_index.'.addHeadline(`'.$slide["slide_headline"].'`);';
+                    slides3.addSlideHeadline(slide'.$slide_index.',`'.$slide["slide_headline"].'`);';
                 }
                 if($slide["slide_description"] !== ""){
-                    echo '
-                    slide'.$slide_index.'.addDescription(`'.$slide['slide_description'].'`);';
+                    echo "
+                    slides3.addSlideDescription(slide".$slide_index.",`".$slide['slide_description']."`);";
                 }
                 if($slide["slide_fotograf"] !== ""){
                     echo '
-                    slide'.$slide_index.'.addPhotographer("'.$slide["slide_fotograf"].'");';
+                    slides3.addSlideFotograf(slide'.$slide_index.',"'.$slide["slide_fotograf"].'");';
                 }
                 if($slide["slide_location"] !== ""){
                     echo '
-                    slide'.$slide_index.'.addLocation("'.$slide["slide_location"].'");';
+                    slides3.addSlideLocation(slide'.$slide_index.',"'.$slide["slide_location"].'");';
                 }
+    
             }
             ?>
             //init
             slides3.init();
         }
-
         if(window["elementor"]){
             init_slides3();
         }else{
@@ -993,9 +995,9 @@ function getHomeslideBackground($settings){
         case 'tour':
             return '';
         case 'image':
-            return 'homeslide.addBackgroundImage("'.$settings['homeslide_background_image']["url"].'");';
+            return 'slides3.addHomeslideBackgroundImage("'.$settings['homeslide_background_image']["url"].'");';
         case 'video':
-            return 'homeslide.addBackgroundVideo("'.$settings['homeslide_background_video'].'");';
+            return 'slides3.addHomeslideBackgroundVideo("'.$settings['homeslide_background_video'].'");';
     }
 }
 function getSlideParams($slide){

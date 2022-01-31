@@ -68,7 +68,7 @@ class Widgets {
 	 */
 	private function include_widgets_files() {
 		require_once 'widgets/class-tourbuilder.php';
-		require_once 'widgets/class-slides3.php';
+		//require_once 'widgets/class-slides3.php';
 	}
 	/**
 	 * Register Categories
@@ -87,6 +87,22 @@ class Widgets {
 			]
 		);
 	}
+		/**
+	 * Register Algolia Control.
+	 *
+	 * Include control file and register control class.
+	 *
+	 * @since 1.0.0
+	 * @param \Elementor\Controls_Manager $controls_manager Elementor controls manager.
+	 * @return void
+	 */
+	function register_algolia_control( $controls_manager ) {
+
+		require_once( __DIR__ . '/controls/algolia.php' );
+
+		$controls_manager->register_control( 'algolia-360ty', new \Elementor_Algolia_Control() );
+
+	}
 	/**
 	 * Register Widgets
 	 *
@@ -102,7 +118,7 @@ class Widgets {
 
 		// Register the plugin widget classes.
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Tourbuilder() );
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Slides3() );
+		//\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Slides3() );
 
 	}
 	
@@ -117,6 +133,7 @@ class Widgets {
 	public function __construct() {
 		// Register the widgets.
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_categories' ) );
+		add_action( 'elementor/controls/register', array( $this,'register_algolia_control' ) );
 		add_action( 'elementor/widgets/widgets_registered', array( $this, 'register_widgets' ) );
 	}
 }
