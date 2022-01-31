@@ -130,7 +130,9 @@ final class Elementor_360ty {
 	 */
 
 	public function admin_notice_missing_main_plugin() {
-		deactivate_plugins( plugin_basename( ELEMENTOR_360ty ) );
+		if (defined('ELEMENTOR_360ty')){
+			deactivate_plugins( plugin_basename( ELEMENTOR_360ty ) );
+		}
 
 		return sprintf(
 			wp_kses(
@@ -157,8 +159,9 @@ final class Elementor_360ty {
 	 * @access public
 	 */
 	public function admin_notice_minimum_elementor_version() {
-		deactivate_plugins( plugin_basename( ELEMENTOR_360ty ) );
-
+		if (defined('ELEMENTOR_360ty')){
+			deactivate_plugins( plugin_basename( ELEMENTOR_360ty ) );
+		}
 		return sprintf(
 			wp_kses(
 				'<div class="notice notice-warning is-dismissible"><p><strong>"%1$s"</strong> requires <strong>"%2$s"</strong> version %3$s or greater.</p></div>',
@@ -185,8 +188,9 @@ final class Elementor_360ty {
 	 * @access public
 	 */
 	public function admin_notice_minimum_php_version() {
-		deactivate_plugins( plugin_basename( ELEMENTOR_360ty ) );
-
+		if (defined('ELEMENTOR_360ty')){
+			deactivate_plugins( plugin_basename( ELEMENTOR_360ty ) );
+		}
 		return sprintf(
 			wp_kses(
 				'<div class="notice notice-warning is-dismissible"><p><strong>"%1$s"</strong> requires <strong>"%2$s"</strong> version %3$s or greater.</p></div>',

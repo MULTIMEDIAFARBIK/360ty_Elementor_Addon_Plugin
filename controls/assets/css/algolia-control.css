@@ -1,0 +1,14 @@
+
+.control-360ty-algolia-select{
+    width: 100%;
+}
+.control-360ty-algolia-select .select2-results{
+}
+.control-360ty-algolia-label{
+    opacity: 0.5; 
+    font-size: 0.9em;
+}
+
+.control-360ty-algolia-wrapper .select2-container{
+    margin-bottom: .5em !important;
+}
