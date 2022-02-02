@@ -22,7 +22,7 @@ class Tourbuilder extends Widget_Base{
 		parent::__construct( $data, $args );
 		wp_register_script( 'pano2vr_player', 'https://api.360ty.cloud/pano2vr_player.js', [ 'elementor-frontend' ], '1.0.0', true );
 		wp_register_script( 'skin', 'https://api.360ty.cloud/skin.js', [ 'elementor-frontend' ], '1.0.0', true );
-		wp_register_script( 'class-tourbuilder', plugins_url('assets/js/class-tourbuilder-360ty.js', dirname(__FILE__) ), [ 'elementor-frontend' ] , '1.1.2', true );
+		wp_register_script( 'class-tourbuilder', "https://api.360ty.cloud/Tourbuilder%20webapp/class-tourbuilder-360ty.js", [ 'elementor-frontend' ] , '1.1.2', true );
 		wp_register_script( 'elementor-editor-script', plugins_url('assets/js/elementor-editor.js', dirname(__FILE__) ), [ 'elementor-frontend' ] , '1.1.2', true );
 		wp_register_style( '360ty-styles', "https://api.360ty.cloud/360ty_styles.css" );
 	}
@@ -742,8 +742,7 @@ class Tourbuilder extends Widget_Base{
 		<div id=<?php echo $containerID?>>
 		</div>
 		<script>
-		var tour_360ty_<?php echo $viewID?>;
-		window.tour_360ty_<?php echo $viewID?> = tour_360ty_<?php echo $viewID?>;
+	
 		function chooseBool(value){
 			let returnVal;
 			value === ("no" || false || "false") ? returnVal = false : returnVal = true;
@@ -751,8 +750,8 @@ class Tourbuilder extends Widget_Base{
 		}
 		function init_<?php echo $viewID?>(className){
 			return new Promise(function(resolve, reject){
-					if(tour_360ty_<?php echo $viewID?>){
-						setTourValues();
+					if(typeof tour_360ty_<?php echo $viewID?> !== "undefined"){
+						setTourValues_<?php echo $viewID?>(tour_360ty_<?php echo $viewID?>);
 						fetch("<?php echo $settings['basepath']?>pano.xml").then(function(res){
 							if(res.status === 200){
 								tour_360ty_<?php echo $viewID?>.setBasePath("<?php echo $settings['basepath']?>");
@@ -761,50 +760,51 @@ class Tourbuilder extends Widget_Base{
 							tour_360ty_<?php echo $viewID?>.reload();
 						}).catch();
 					}else{
-						tour_360ty_<?php echo $viewID?> = new (className)(<?php echo "'".$containerID."','".$settings['basepath']."','".$viewID."'"?>);
-						setTourValues();
+						var tour_360ty_<?php echo $viewID?> = new (className)(<?php echo "'".$containerID."','".$settings['basepath']."','".$viewID."'"?>);
+						window.tour_360ty_<?php echo $viewID?> = tour_360ty_<?php echo $viewID?>;
+						setTourValues_<?php echo $viewID?>(tour_360ty_<?php echo $viewID?>);
 						tour_360ty_<?php echo $viewID?>.init().then(resolve);
 					}
 			});
 			
 		}
-		function setTourValues(){
-				tour_360ty_<?php echo $viewID?>.setDimensions(<?php echo "'".$settings['tour_width']."','".$tourheight_desktop."'"?>);
-				tour_360ty_<?php echo $viewID?>.setHorizontalAlignment(<?php echo "'".$settings['horizontal_alignment']."'"?>);
-				tour_360ty_<?php echo $viewID?>.setStartNode(<?php echo $settings['startnodeID']?>);
-				tour_360ty_<?php echo $viewID?>.setViewingParameter(<?php echo $settings['fov']['size'].",".$settings['tilt']['size'].",".$settings['pan']['size']?>);
-				tour_360ty_<?php echo $viewID?>.setSingleImage(<?php echo $settings['single_image'] === "true"? "true" : "false" ?>);
-				tour_360ty_<?php echo $viewID?>.setShareButtonVisibility(<?php echo $settings['share_buttons']  === "true"? "true" : "false" ?>);
-				tour_360ty_<?php echo $viewID?>.setImpressumVisibility(<?php echo $settings['show_impressum'] === "true"? "true" : "false" ?>);
-				tour_360ty_<?php echo $viewID?>.setSkinVariables(<?php echo json_encode($skin_variables)?>);
-				tour_360ty_<?php echo $viewID?>.setMovementLoopAmount(<?php echo $settings['loop_amount']?>);
-				tour_360ty_<?php echo $viewID?>.setMovementDelay(parseInt(<?php echo $settings['movement_delay']?>));
+		function setTourValues_<?php echo $viewID?>(tour){
+				tour.setDimensions(<?php echo "'".$settings['tour_width']."','".$tourheight_desktop."'"?> || "16:9");
+				tour.setHorizontalAlignment(<?php echo "'".$settings['horizontal_alignment']."'"?>);
+				tour.setStartNode(<?php echo $settings['startnodeID']?>);
+				tour.setViewingParameter(<?php echo $settings['fov']['size'].",".$settings['tilt']['size'].",".$settings['pan']['size']?>);
+				tour.setSingleImage(<?php echo $settings['single_image'] === "true"? "true" : "false" ?>);
+				tour.setShareButtonVisibility(<?php echo $settings['share_buttons']  === "true"? "true" : "false" ?>);
+				tour.setImpressumVisibility(<?php echo $settings['show_impressum'] === "true"? "true" : "false" ?>);
+				tour.setSkinVariables(<?php echo json_encode($skin_variables)?>);
+				tour.setMovementLoopAmount(<?php echo $settings['loop_amount']?>);
+				tour.setMovementDelay(parseInt(<?php echo $settings['movement_delay']?>));
 				<?php
 				if($settings['keyframes']){
 					foreach($settings['keyframes'] as $keyframe){
-						echo 'tour_360ty_'.$viewID.'.addKeyframe('.$keyframe['fov']['size'].','.$keyframe['tilt']['size'].','.$keyframe['pan']['size'].','.$keyframe['movement_speed'].',"'.$keyframe['movement_lock_controls'].'",'.$keyframe['nodeID'].');';
+						echo 'tour.addKeyframe('.$keyframe['fov']['size'].','.$keyframe['tilt']['size'].','.$keyframe['pan']['size'].','.$keyframe['movement_speed'].',"'.$keyframe['movement_lock_controls'].'",'.$keyframe['nodeID'].');';
 					}
 				}
 				?>			
 				//responsive params
 				//tablet
-				tour_360ty_<?php echo $viewID?>.setDimensions_tablet(<?php echo "'".$tourWidthTablet."','".$tourheight_tablet."'"?>);
-				tour_360ty_<?php echo $viewID?>.setHorizontalAlignment_tablet(<?php echo "'".$horAlignTablet."'"?>);
-				tour_360ty_<?php echo $viewID?>.setSingleImage_tablet(<?php echo $singleImageTablet=== "true"? "true" : "false"?>);
-				tour_360ty_<?php echo $viewID?>.setShareButtonVisibility_tablet(<?php echo $shareButtonsTablet=== "true"? "true" : "false"?>);
-				tour_360ty_<?php echo $viewID?>.setImpressumVisibility_tablet(<?php echo $impressumTablet=== "true"? "true" : "false"?>);
+				tour.setDimensions_tablet(<?php echo "'".$tourWidthTablet."','".$tourheight_tablet."'"?>);
+				tour.setHorizontalAlignment_tablet(<?php echo "'".$horAlignTablet."'"?>);
+				tour.setSingleImage_tablet(<?php echo $singleImageTablet=== "true"? "true" : "false"?>);
+				tour.setShareButtonVisibility_tablet(<?php echo $shareButtonsTablet=== "true"? "true" : "false"?>);
+				tour.setImpressumVisibility_tablet(<?php echo $impressumTablet=== "true"? "true" : "false"?>);
 				//mobile
-				tour_360ty_<?php echo $viewID?>.setDimensions_mobile(<?php echo "'".$tourWidthMobile."','".$tourheight_mobile."'"?>);
-				tour_360ty_<?php echo $viewID?>.setHorizontalAlignment_mobile(<?php echo "'".$horAlignMobile."'"?>);
-				tour_360ty_<?php echo $viewID?>.setSingleImage_mobile(<?php echo $singleImageMobile=== "true"? "true" : "false"?>);
-				tour_360ty_<?php echo $viewID?>.setShareButtonVisibility_mobile(<?php echo $shareButtonsMobile=== "true"? "true" : "false"?>);
-				tour_360ty_<?php echo $viewID?>.setImpressumVisibility_mobile(<?php echo $impressumMobile=== "true"? "true" : "false"?>);			
+				tour.setDimensions_mobile(<?php echo "'".$tourWidthMobile."','".$tourheight_mobile."'"?>);
+				tour.setHorizontalAlignment_mobile(<?php echo "'".$horAlignMobile."'"?>);
+				tour.setSingleImage_mobile(<?php echo $singleImageMobile=== "true"? "true" : "false"?>);
+				tour.setShareButtonVisibility_mobile(<?php echo $shareButtonsMobile=== "true"? "true" : "false"?>);
+				tour.setImpressumVisibility_mobile(<?php echo $impressumMobile=== "true"? "true" : "false"?>);			
 		}
-		function run(){
+		function run_<?php echo $viewID?>(){
 			return new Promise(function(resolve, reject){
 				let classInterval = setInterval(function(){
 				try{
-					if(Pano_360ty){
+					if(typeof Pano_360ty !== 'undefined' && Pano_360ty){
 						clearInterval(classInterval);
 						init_<?php echo $viewID?>(Pano_360ty).then(resolve);
 						
@@ -817,8 +817,8 @@ class Tourbuilder extends Widget_Base{
 			},50);
 			});
 		}
-		run().then(function(){
-			if(window["elementor"]){
+		run_<?php echo $viewID?>().then(function(){
+			if(typeof elementor !== 'undefined' && elementor){
 				let elemEditor_<?php echo $viewID?> = new ElementorEditor360ty("<?php echo $viewID?>",tour_360ty_<?php echo $viewID?>);
 			}
 		});

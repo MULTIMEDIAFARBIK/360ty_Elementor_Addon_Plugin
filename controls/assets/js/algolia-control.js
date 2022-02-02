@@ -38,8 +38,10 @@ window.addEventListener( 'elementor/init', () => {
 			});
 		},
 		saveValue() {
-			this.setValue(this.control_select.val());
-			this.save_input.val(this.control_select.val())
+			if(this.control_select.val()){
+				this.setValue(this.control_select.val());
+				this.save_input.val(this.control_select.val())
+			}
 		},
 		onBeforeDestroy() {
 			this.saveValue();
