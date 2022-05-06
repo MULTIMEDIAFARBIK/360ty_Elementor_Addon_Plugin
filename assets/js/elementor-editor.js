@@ -13,10 +13,23 @@ class ElementorEditor360ty{
     init = function () {
         this.pano_instance.waitForPanoLoad().then(function () {
             this.view = this.findViewById(this.viewId);
+			window.testview = this.view;
+			this.disableWidgetDrag();
             this.add_responsive_control_listener();
             this.waitForPanoContainer().then(this.createValueSetterButtons.bind(this));
         }.bind(this));
     }
+	disableWidgetDrag = function(){
+		if(!this.view){
+			this.view = this.findViewById(this.viewId);
+		}
+		if(this.view){
+			let widgetContainer = this.view.$el[0].querySelector(".elementor-widget-container");
+			if(widgetContainer){
+				widgetContainer.addEventListener("mousedown",function(e){e.stopPropagation();});
+			} 
+		}
+	}
     getViewId = function () {
         var view = this.pano_instance.elements.container.parentElement.parentElement.parentElement.dataset.id;
         if (view === undefined) {

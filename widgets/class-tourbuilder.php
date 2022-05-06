@@ -20,9 +20,8 @@ class Tourbuilder extends Widget_Base{
 
 	public function __construct( $data = [], $args = null ) {
 		parent::__construct( $data, $args );
-		wp_register_script( 'pano2vr_player', 'https://api.360ty.cloud/pano2vr_player.js', [ 'elementor-frontend' ], '1.0.0', true );
 		wp_register_script( 'skin', 'https://api.360ty.cloud/skin.js', [ 'elementor-frontend' ], '1.0.0', true );
-		wp_register_script( 'class-tourbuilder', "https://api.360ty.cloud/Tourbuilder%20webapp/class-tourbuilder-360ty.js", [ 'elementor-frontend' ] , '1.1.2', true );
+		wp_register_script( 'class-tourbuilder', "https://storage.googleapis.com/api.360ty.cloud/Tourbuilder%20webapp/class-tourbuilder-360ty.js", [ 'elementor-frontend' ] , '1.1.3', true );
 		wp_register_script( 'elementor-editor-script', plugins_url('assets/js/elementor-editor.js', dirname(__FILE__) ), [ 'elementor-frontend' ] , '1.1.2', true );
 		wp_register_style( '360ty-styles', "https://api.360ty.cloud/360ty_styles.css" );
 	}
@@ -100,7 +99,7 @@ class Tourbuilder extends Widget_Base{
 	 */
 	public function get_script_depends() {
 		//$scripts = ['pano2vr_player','three','skin','init','setup_pano','share_buttons','class-360ty'];
-		$scripts = ['pano2vr_player','skin','class-tourbuilder','elementor-editor-script'];
+		$scripts = ['skin','class-tourbuilder','elementor-editor-script'];
 	
 		return $scripts;
 	}
@@ -125,18 +124,6 @@ class Tourbuilder extends Widget_Base{
 				'label' => __( 'Tour Options', 'tour-builder' ),
 				'tab' => Controls_Manager::TAB_CONTENT,
 			)
-		);
-		$this->add_control(
-			'note',
-			[
-				'label' => __( 'Info', 'tour-builder' ),
-				'type' => \Elementor\Controls_Manager::RAW_HTML,
-				'raw' => __( 'Use the middle mouse button, to move in the tour!', 'tour-builder' ),
-				'content_classes' => '360ty_tourbuilder_controls_info elementor-control-field-description',
-				'dynamic' => [
-					'active' => true,
-				],
-			]
 		);
 		$this->add_control('basepath',
 			[
@@ -163,7 +150,7 @@ class Tourbuilder extends Widget_Base{
 			[
 				'text' => 'insert current Values',
 				'show_label' => false,
-				'discription' => "click to insert the current values of the preview",
+				'description' => "click to insert the current values of the preview",
 				'event' =>
 			]	
 		);*/
@@ -462,21 +449,37 @@ class Tourbuilder extends Widget_Base{
 				)
 		);
 		$this->add_responsive_control(
+			'scroll_lock',
+			[
+				'label' => __( 'Scroll Lock', 'tour-builder' ),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __( 'on', 'tour-builder' ),
+				'label_off' => __( 'off', 'tour-builder' ),
+				'return_value' => true,
+				'devices' => ['desktop'],
+				'desktop_default' => true,
+				'dynamic' => [
+					'active' => true,
+				],
+				'description' => 'If the page is scrollable, prevent the tour from interrupting the scrolling with the mousewheel. (use CTRL + scroll to zoom)',
+			]
+	);
+		$this->add_responsive_control(
 				'single_image',
 				[
 					'label' => __( 'Remove Hotspots', 'tour-builder' ),
 					'type' => Controls_Manager::SWITCHER,
 					'label_on' => __( 'yes', 'tour-builder' ),
 					'label_off' => __( 'no', 'tour-builder' ),
-					'return_value' => 'true',
+					'return_value' => true,
 					'devices' => ['desktop','tablet','mobile'],
-					'desktop_default' => "no",
-					'mobile_default' => "no",
-					'tablet_default' => "no",
+					'desktop_default' => false,
+					'mobile_default' => false,
+					'tablet_default' => false,
 					'dynamic' => [
 						'active' => true,
 					],
-					'discription' => 'If only the start hotspot should be displayed. Removes all nodes to change hotspots.',
+					'description' => 'If only the start hotspot should be displayed. Removes all hotspots (connections) to change nodes (360 images).',
 				]
 		);
 		$this->add_responsive_control(
@@ -486,15 +489,15 @@ class Tourbuilder extends Widget_Base{
 				'type' => Controls_Manager::SWITCHER,
 				'label_on' => __( 'yes', 'tour-builder' ),
 				'label_off' => __( 'no', 'tour-builder' ),
-				'return_value' => 'true',
+				'return_value' => true,
 				'devices' => ['desktop','tablet','mobile'],
-				'desktop_default' => "no",
-				'mobile_default' => "no",
-				'tablet_default' => "no",
+				'desktop_default' => false,
+				'mobile_default' => false,
+				'tablet_default' => false,
 				'dynamic' => [
 					'active' => true,
 				],
-				'discription' => 'Include share buttons for facebook and as an URL  to the current location',
+				'description' => 'Include share buttons for facebook and as an URL  to the current location',
 				]
 		);
 	
@@ -505,14 +508,15 @@ class Tourbuilder extends Widget_Base{
 				'type' => Controls_Manager::SWITCHER,
 				'label_on' => __( 'yes', 'tour-builder' ),
 				'label_off' => __( 'no', 'tour-builder' ),
-				'return_value' => 'true',
+				'return_value' => true,
 				'devices' => ['desktop','tablet','mobile'],
-				'desktop_default' => "yes",
-				'mobile_default' => "yes",
-				'tablet_default' => "yes",
+				'desktop_default' => true,
+				'mobile_default' => true,
+				'tablet_default' => true,
 				'dynamic' => [
 					'active' => true,
 				],
+				'description' => 'show a link to our website at the bottom-right corner <3'
 				]
 		);
 		
@@ -723,31 +727,26 @@ class Tourbuilder extends Widget_Base{
 		}else{
 			$tourheight_mobile = $tourheight_desktop;
 		}
-		$tourWidthTablet = isset($settings['tour_width_tablet']) ? $settings['tour_width_tablet'] : $settings['tour_width'];
-		$tourWidthMobile = isset($settings['tour_width_mobile']) ? $settings['tour_width_mobile'] : $settings['tour_width'];
+		$tourWidthTablet = getResponsiveValue($settings['tour_width_tablet'],$settings['tour_width']);
+		$tourWidthMobile = getResponsiveValue($settings['tour_width_mobile'],$settings['tour_width']);
 
-		$horAlignTablet = isset($settings['horizontal_alignment_tablet']) ? $settings['horizontal_alignment_tablet'] : $settings['horizontal_alignment'];
-		$horAlignMobile = isset($settings['horizontal_alignment_mobile']) ? $settings['horizontal_alignment_mobile'] : $settings['horizontal_alignment'];
+		$horAlignTablet = getResponsiveValue($settings['horizontal_alignment_tablet'],$settings['horizontal_alignment']);
+		$horAlignMobile = getResponsiveValue($settings['horizontal_alignment_mobile'],$settings['horizontal_alignment']);
 
-		$shareButtonsTablet = isset($settings['share_buttons_tablet']) ? $settings['share_buttons_tablet'] : $settings['share_buttons'];
-		$shareButtonsMobile = isset($settings['share_buttons_mobile']) ? $settings['share_buttons_mobile'] : $settings['share_buttons'];
+		$shareButtonsTablet = chooseBool(getResponsiveValue($settings['share_buttons_tablet'],$settings['share_buttons']));
+		$shareButtonsMobile = chooseBool(getResponsiveValue($settings['share_buttons_mobile'],$settings['share_buttons']));
 
-		$impressumTablet = isset($settings['show_impressum_tablet']) ? $settings['show_impressum_tablet'] : $settings['show_impressum'];
-		$impressumMobile = isset($settings['show_impressum_mobile']) ? $settings['show_impressum_mobile'] : $settings['show_impressum'];
+		$impressumTablet = chooseBool(getResponsiveValue($settings['show_impressum_tablet'],$settings['show_impressum']));
+		$impressumMobile = chooseBool(getResponsiveValue($settings['show_impressum_mobile'],$settings['show_impressum']));
 
-		$singleImageTablet = isset($settings['single_image_tablet']) ? $settings['single_image_tablet'] : $settings['single_image'];
-		$singleImageMobile = isset($settings['single_image_mobile']) ? $settings['single_image_mobile'] : $settings['single_image'];
+		$singleImageTablet = chooseBool(getResponsiveValue($settings['single_image_tablet'],$settings['single_image'])); 
+		$singleImageMobile = chooseBool(getResponsiveValue($settings['single_image_mobile'],$settings['single_image']));
 
+		$scrollLock = chooseBool($settings['scroll_lock']);
 		?>
 		<div id=<?php echo $containerID?>>
 		</div>
 		<script>
-	
-		function chooseBool(value){
-			let returnVal;
-			value === ("no" || false || "false") ? returnVal = false : returnVal = true;
-			return returnVal;
-		}
 		function init_<?php echo $viewID?>(className){
 			return new Promise(function(resolve, reject){
 					if(typeof tour_360ty_<?php echo $viewID?> !== "undefined"){
@@ -796,13 +795,14 @@ class Tourbuilder extends Widget_Base{
 				//mobile
 				tour.setDimensions_mobile(<?php echo "'".$tourWidthMobile."','".$tourheight_mobile."'"?>);
 				tour.setHorizontalAlignment_mobile(<?php echo "'".$horAlignMobile."'"?>);
-				tour.setSingleImage_mobile(<?php echo $singleImageMobile=== "true"? "true" : "false"?>);
-				tour.setShareButtonVisibility_mobile(<?php echo $shareButtonsMobile=== "true"? "true" : "false"?>);
-				tour.setImpressumVisibility_mobile(<?php echo $impressumMobile=== "true"? "true" : "false"?>);			
+				tour.setSingleImage_mobile(<?php echo $singleImageMobile?>);
+				tour.setShareButtonVisibility_mobile(<?php echo $shareButtonsMobile?>);
+				tour.setImpressumVisibility_mobile(<?php echo $impressumMobile?>);		
+				tour.setScrollLock(<?php echo $scrollLock?>);	
 		}
 		function run_<?php echo $viewID?>(){
 			return new Promise(function(resolve, reject){
-				let classInterval = setInterval(function(){
+				var classInterval = setInterval(function(){
 				try{
 					if(typeof Pano_360ty !== 'undefined' && Pano_360ty){
 						clearInterval(classInterval);
@@ -819,7 +819,7 @@ class Tourbuilder extends Widget_Base{
 		}
 		run_<?php echo $viewID?>().then(function(){
 			if(typeof elementor !== 'undefined' && elementor){
-				let elemEditor_<?php echo $viewID?> = new ElementorEditor360ty("<?php echo $viewID?>",tour_360ty_<?php echo $viewID?>);
+				var elemEditor_<?php echo $viewID?> = new ElementorEditor360ty("<?php echo $viewID?>",tour_360ty_<?php echo $viewID?>);
 			}
 		});
 	
@@ -837,3 +837,9 @@ function RandomString()
         }
         return $randstring;
 	}
+function chooseBool($bool){
+	return $bool === "true" || true ? "true" : "false";
+}
+function getResponsiveValue($responsive_value,$fallback){
+	return isset($responsive_value) ? $responsive_value : $fallback;
+}
